@@ -32,6 +32,9 @@ class Orchestrator:
             self.validate(task)
             assessment = self.app.repository.get_assessment(task.assessment_id)
             allowed = assessment.scope.allowed_operations
+            self.app.repository.audit("red.assessment.started", task.assessment_id, task.id,
+                                      {"target": task.target, "ports": task.params.get("ports", []),
+                                       "technique": "T1046", "mode": "scoped_network_service_discovery"})
             try:
                 if "blue.monitor" in allowed and not self.app.ops.blue_status()["running"]:
                     blue = await self._child(task, "blue.monitor", created)
@@ -60,9 +63,21 @@ class Orchestrator:
                 children = [self.app.repository.get_task(identity) for identity in created]
                 conclusive = scan.state == TaskState.SUCCEEDED and scan.result.get("scan_status") == "complete"
                 checks_conclusive = all(child.state == TaskState.SUCCEEDED and child.result.get("status") != "inconclusive" for child in children)
-                return {"profile": "rule_based_scoped", "target": task.target,
+                red_summary = {"version": "0.1", "target": task.target,
+                               "technique": "T1046 Network Service Scanning",
+                               "requested_ports": list(task.params["ports"]),
+                               "open_ports": sorted({p["port"] for h in scan.result.get("hosts", [])
+                                                      for p in h.get("ports", []) if p.get("state") == "open"})
+                               if scan.state == TaskState.SUCCEEDED else [],
+                               "follow_up_operations": [decision.get("operation") for decision in decisions
+                                                         if decision.get("operation")],
+                               "limitations": ["TCP connect discovery only", "No exploitation, credential attack, persistence or evasion"]}
+                self.app.repository.audit("red.assessment.completed", task.assessment_id, task.id,
+                                          {"status": "complete" if conclusive and checks_conclusive else "inconclusive",
+                                           "open_ports": red_summary["open_ports"], "technique": "T1046"})
+                return {"profile": "red_team_v0.1_scoped", "target": task.target,
                         "status": "complete" if conclusive and checks_conclusive else "inconclusive",
-                        "child_task_ids": created, "decisions": decisions,
+                        "child_task_ids": created, "decisions": decisions, "red": red_summary,
                         "finding_count": len(self.app.list_findings(task.assessment_id)),
                         "purple": self.app.ops.purple(task.assessment_id), "report": report,
                         "limitations": ["No LLM, exploit or unrestricted command execution",

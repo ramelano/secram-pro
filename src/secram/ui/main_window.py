@@ -43,7 +43,7 @@ except ImportError as exc:  # pragma: no cover - exercised only without the opti
 
 _PHASE1_OPERATION = "core.self_check"
 _MODULE_STATUS_ROWS = (
-    ("Red / Orchestrator", "Implemented — sınırlı", "Kural tabanlı Nmap → izinli HTTP/TLS → gerçek rapor; istismar yok."),
+    ("Red Team v0.1", "Implemented — sınırlı", "Yetkili tek IP TCP keşfi → izinli HTTP/TLS takipleri → kanıtlı rapor; MITRE T1046; istismar yok."),
     ("Blue", "Partial", "Süreç/ağ gözlemi, seçilmiş auth log, hash ve IOC; journal/eBPF/IDS yok."),
     ("Purple", "Partial", "Kanıtlı zaman çizelgesi; ölçülemeyen oranlar bilinmiyor. Yalnız T1046 eşlemesi."),
     ("Host", "Implemented — sınırlı", "Salt okunur anlık kaynak/süreç/ağ/erişilebilir servis bilgisi."),

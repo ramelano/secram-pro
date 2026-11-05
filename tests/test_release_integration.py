@@ -33,6 +33,9 @@ def test_actual_autonomous_lab_and_all_reports(service):
     finished = service.repository.get_task(task.id)
     assert finished.state.value == "succeeded", finished.error
     assert finished.result["status"] == "complete"
+    assert finished.result["profile"] == "red_team_v0.1_scoped"
+    assert finished.result["red"]["technique"] == "T1046 Network Service Scanning"
+    assert any(record.event == "red.assessment.completed" for record in service.list_audit())
     operations = {service.repository.get_task(identity).operation for identity in finished.result["child_task_ids"]}
     assert {"nmap.tcp_scan","web.http_headers","blue.monitor"} <= operations
     assert service.list_findings(assessment.id)

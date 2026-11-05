@@ -13,6 +13,31 @@ SecRam-Pro ile şunları yapabilirsiniz:
 - Bulguları JSON, Markdown, HTML, CSV ve PDF olarak dışa aktarabilirsiniz.
 - Programın kendi güvenli eğitim Lab’ında örnek bir uçtan uca test çalıştırabilirsiniz.
 
+## Red Team v0.1 ne yapar?
+
+Bu sürümde Red Team artık ayrı ve görünür bir kullanım alanıdır. Red Team v0.1 şu akışı gerçek olarak çalıştırır:
+
+1. Yazılı izinli tek bir IP adresini alır.
+2. Yalnızca izin verilen TCP portlarında Nmap connect keşfi yapar.
+3. Açık portları listeler.
+4. Yalnızca açıkça verilen `http`, `https` veya `tls` ipucuna göre izinli HTTP/TLS kontrolü yapar.
+5. Kanıtları bulgu ve rapor olarak kaydeder.
+6. Keşif tekniğini MITRE ATT&CK **T1046 — Network Service Scanning** ile eşleştirir.
+
+Grafik arayüzünde **Operasyonlar → Red Team** sekmesini açın. Değerlendirme seçin, hedef IP’yi ve izinli portları yazın, sonra **Yetkili Red Team keşfini başlat** düğmesine basın.
+
+Komut satırından aynı akış:
+
+```bash
+./SecRam-Pro-v0.4.0-x86_64.AppImage \
+  --run-assessment /tmp/benim-degerlendirmem.json \
+  > red-team-sonucu.json
+```
+
+Sonuçta `profile` alanı `red_team_v0.1_scoped`, `red.technique` alanı ise `T1046 Network Service Scanning` olur.
+
+Bu sürüm **istismar, parola saldırısı, credential theft, kalıcılık, gizlenme/evasion, phishing, malware veya sınırsız komut çalıştırma yapmaz**. Bilinmeyen servis portlarına kör HTTP/TLS isteği göndermez. Red sonuçları gözlem ve aday bulgudur; açık port tek başına zafiyet kanıtı değildir.
+
 > **Önemli:** Bu program yalnızca size ait veya yazılı izin aldığınız sistemlerde kullanılmalıdır. Program Windows için değildir; bu sürüm Linux içindir.
 
 ## En kolay kullanım: AppImage

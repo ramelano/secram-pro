@@ -19,13 +19,13 @@ class OperationsPanel(QWidget):
         tabs=QTabWidget(); layout.addWidget(tabs)
         self.tabs=tabs
 
-        tab, body=self._tab("Otonom / Red", "Kural tabanlı, tek IP ve izinli portlarla Nmap → bulguya bağlı HTTP/TLS → rapor. LLM veya istismar değildir.")
+        tab, body=self._tab("Red Team", "Red Team v0.1: yazılı izinli tek IP’de TCP servis keşfi, kanıtlı HTTP/TLS takipleri ve raporlama. T1046 eşlemesi vardır; istismar, parola saldırısı, kalıcılık ve gizlenme yoktur.")
         form=QFormLayout(); body.addLayout(form)
         self.target=QLineEdit("127.0.0.1"); self.ports=QLineEdit(); self.hints=QLineEdit()
         self.ports.setPlaceholderText("80,443 — en fazla 32")
         self.hints.setPlaceholderText("80=http,443=https — yalnız gerekli portlarda")
         form.addRow("Hedef literal IP",self.target); form.addRow("TCP portları",self.ports); form.addRow("Açık protokol ipucu",self.hints)
-        self.auto_button=self._button(body,"Yetkili otonom değerlendirmeyi başlat",self.start_auto)
+        self.auto_button=self._button(body,"Yetkili Red Team keşfini başlat",self.start_auto)
         self.auto_view=self._view(body)
 
         tab,body=self._tab("Blue", "Host/süreç/ağ gözlemleri, seçilen yeni auth-log satırları, dosya hash değişiklikleri ve kullanıcı IOC IP'leri. Bu veriler tek başına saldırı kanıtı değildir. Journal okuyucusu yok.")
@@ -97,7 +97,7 @@ class OperationsPanel(QWidget):
             for pair in self.hints.text().split(","):
                 if pair.strip():
                     port,scheme=pair.strip().split("=",1); hints[port.strip()]=scheme.strip()
-            task=self.service.submit_operation(self.assessment_id(),"Kapsam kontrollü otonom profil","orchestrator.run",
+            task=self.service.submit_operation(self.assessment_id(),"Red Team v0.1 — kapsam kontrollü keşif","orchestrator.run",
                 target=self.target.text(),params={"ports":_parse_ports(self.ports.text()),"web_services":hints})
             self._show(self.auto_view,{"task_id":task.id,"state":task.state.value})
         except Exception as exc: self._error(exc)
