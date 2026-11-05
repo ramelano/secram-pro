@@ -23,9 +23,12 @@ dist/
 /lab/
 /private-export/
 /wheelhouse/
-/offline-source/
+offline-source/
 *test-results.xml
 !docs/test-results.xml
 !docs/*test-results.xml
 !docs/compat/**/tests.xml
+# Root-level machine/runtime evidence; keep public evidence under docs/ instead.
+/cli-self-check.json
+/phase2-host-cli.json
 .DS_Store

@@ -46,11 +46,30 @@ AppImage, kurulum gerektirmeyen tek dosyalık Linux paketidir.
 
 ### 1. AppImage dosyasını indirin
 
-Şu dosyaya ihtiyacınız var:
+Şu dosyayı GitHub Release sayfasından indirin:
+
+[**SecRam-Pro v0.4.0 Release sayfası**](https://github.com/ramelano/secram-pro/releases/tag/v0.4.0)
+
+Doğrudan AppImage indirme bağlantısı:
+
+[**SecRam-Pro-v0.4.0-x86_64.AppImage**](https://github.com/ramelano/secram-pro/releases/latest/download/SecRam-Pro-v0.4.0-x86_64.AppImage)
 
 ```text
 SecRam-Pro-v0.4.0-x86_64.AppImage
 ```
+
+İsterseniz [portable tarball’ı](https://github.com/ramelano/secram-pro/releases/latest/download/SecRam-Pro-v0.4.0-portable-x86_64.tar.gz) da indirebilirsiniz.
+
+### İndirme doğrulaması
+
+SHA256 dosyasını indirin:
+
+```bash
+wget https://github.com/ramelano/secram-pro/releases/latest/download/SHA256SUMS
+sha256sum -c SHA256SUMS --ignore-missing
+```
+
+Çıktıda AppImage veya tarball için `OK` görmelisiniz. `FAILED` görürseniz dosyayı çalıştırmayın; yeniden indirin.
 
 Dosyayı bilgisayarınızda örneğin `İndirilenler` klasörüne koyun.
 
