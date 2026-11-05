@@ -27,15 +27,32 @@ Windows kapsamı kullanıcı kararıyla kaldırılmıştır. Fedora 43, Debian 1
 
 ### Portable Linux dağıtımı
 
-Hazır x86_64 AppImage ve portable tarball için [`docs/portable.md`](docs/portable.md) dosyasına bakın. Kısa kullanım:
+Hazır x86_64 AppImage ve portable tarball için [`docs/portable.md`](docs/portable.md) dosyasına bakın. AppImage Python/Qt çalışma dosyalarını taşır; Nmap, `ip`, `unshare`, kernel namespace yeteneği ve grafik sistemini taşımaz.
 
 ```bash
+# AppImage
 chmod +x SecRam-Pro-v0.4.0-x86_64.AppImage
 ./SecRam-Pro-v0.4.0-x86_64.AppImage --doctor
 ./SecRam-Pro-v0.4.0-x86_64.AppImage --self-check
+
+# Grafik arayüzü
+./SecRam-Pro-v0.4.0-x86_64.AppImage
+
+# FUSE kapalı sistemlerde alternatif
+APPIMAGE_EXTRACT_AND_RUN=1 ./SecRam-Pro-v0.4.0-x86_64.AppImage
 ```
 
-AppImage Python/Qt dosyalarını taşır; Nmap, `ip`, `unshare`, kernel namespace yeteneği ve grafik sistemini taşımaz. Bu nedenle `--doctor` çıktısı zorunlu kontrol olarak değerlendirilmelidir. AppImage tam VM/konteyner izolasyonu değildir.
+Tarball kullanımı:
+
+```bash
+tar -xzf SecRam-Pro-v0.4.0-portable-x86_64.tar.gz
+cd SecRam-Pro.AppDir
+./AppRun --doctor
+./AppRun --self-check
+./AppRun
+```
+
+`--doctor` çıktısı zorunlu ilk kontroldür. AppImage tam VM/konteyner izolasyonu değildir.
 
 ### Kaynaktan kurulum
 
@@ -73,7 +90,11 @@ Tekrarlanabilir test sürümleri için `python -m pip install -r requirements-lo
 ## İlk gerçek gösterim — yalnız kendi geçici Lab’ınız
 
 ```bash
+# Kaynak kurulumunda
 secram-pro --lab-demo
+
+# AppImage ile aynı senaryo
+./SecRam-Pro-v0.4.0-x86_64.AppImage --lab-demo
 ```
 
 Bu komut uygulamanın oluşturduğu `127.0.0.1` HTTP Lab’ını gerçek Nmap/HTTP ile değerlendirir, Blue gözlemlerini ve Purple sonucunu raporlar. Çıkışta Lab ve izleme durur. Rootless namespace kullanılamıyorsa açık hata verir; sahte/izolasyonsuz başarıya dönmez.
@@ -86,6 +107,106 @@ Arayüzden:
 4. **Görevler / Bulgular / Blue / Purple / Raporlar** ekranlarını inceleyin.
 
 **Lab güvenlik sınırı:** Kernel ve dosya sistemi host ile paylaşılır; gateway namespace sınırını bilerek geçer. Yalnız sabit zararsız eğitim fixture’ıdır. Güvenilmeyen exploit/PoC/zararlı yazılım için güvenli VM veya konteyner değildir.
+
+## Komut satırı kullanım senaryoları
+
+Komutlar kaynak kurulumunda `secram-pro`, AppImage’da `./SecRam-Pro-v0.4.0-x86_64.AppImage`, tarball’da ise `./AppRun` ile çalıştırılabilir. Aşağıdaki örneklerde `secram-pro` kullanılmıştır.
+
+### Bağımlılık ve çekirdek kontrolü
+
+```bash
+# Python, Nmap, ip, unshare, OSV ve Lab durumunu gösterir; tarama yapmaz.
+secram-pro --doctor
+
+# Yerel çekirdeğin temel uygulama sözleşmesini kontrol eder; hedefe ağ isteği yapmaz.
+secram-pro --self-check
+
+# Salt okunur Host snapshot alır; değişiklik yapmaz.
+secram-pro --host-snapshot
+```
+
+`--doctor` başarılı görünse bile kernel namespace izni ayrıca değerlendirilir. `rootless_namespace_verified:false` sonucu Lab’ın henüz doğrulanmadığını gösterir; bunu başarı olarak yorumlamayın.
+
+### Grafik arayüzünü başlatma
+
+```bash
+# Normal masaüstü oturumunda GUI’yi açar.
+secram-pro
+
+# Headless test veya CI için kısa GUI açılış/kapanış testi.
+QT_QPA_PLATFORM=offscreen secram-pro --smoke-test
+```
+
+GUI içinde önce kapsam ve yetkilendirme oluşturun, sonra izinli işlemleri seçin. **Operasyonlar → Lab** yalnız kendi geçici Lab’ınızdır; gerçek hedeflerde doğrudan GUI’den kapsam, süre, port ve işlem izinlerini açıkça belirleyin.
+
+### Kendi yerel Lab’ınızda gerçek uçtan uca test
+
+```bash
+secram-pro --lab-demo > lab-demo.json
+echo $?
+```
+
+Bu komut yalnız uygulamanın oluşturduğu `127.0.0.1` HTTP fixture’ına gider ve JSON görev sonucunu stdout’a yazar. `0` çıkış kodu workflow’un tamamlandığını, `1` çıkış kodu Lab/namespace veya görev hatasını belirtir. Başka IP, port veya profil kabul etmez.
+
+### JSON yetki profiliyle kontrollü değerlendirme
+
+Önce örneği kopyalayın ve yalnız size ait hedef/port/izin değerlerini düzenleyin:
+
+```bash
+cp examples/assessment-local.json /tmp/my-assessment.json
+$EDITOR /tmp/my-assessment.json
+secram-pro --run-assessment /tmp/my-assessment.json > assessment-result.json
+```
+
+Profilde `cidrs`, `target`, `ports`, `approved_by`, `evidence_reference`, `allowed_operations` ve gerekiyorsa `web_services` alanlarını açıkça verin. Örnek:
+
+```json
+{
+  "title": "Kendi loopback servisim",
+  "cidrs": ["127.0.0.1/32"],
+  "approved_by": "Yerel sistem sahibi",
+  "evidence_reference": "ticket-or-written-authorization-123",
+  "expires_hours": 1,
+  "allowed_operations": ["orchestrator.run", "nmap.tcp_scan", "web.http_headers", "blue.monitor"],
+  "ports": [8000],
+  "target": "127.0.0.1",
+  "web_services": {"8000": "http"}
+}
+```
+
+Port üzerinde gerçekten servis yoksa başarılı HTTP sonucu beklemeyin. DNS/hostname, CIDR toplu taraması, UDP, NSE, serbest Nmap argümanları ve istismar desteklenmez. Her görev süresi, işlem ve port kapsamını yeniden kontrol eder.
+
+### Değerlendirmeleri listeleme ve rapor dışa aktarma
+
+```bash
+# Kayıtlı değerlendirme ve UUID’lerini JSON olarak gösterir.
+secram-pro --list-assessments > assessments.json
+
+# ASSESSMENT_ID değerini yukarıdaki JSON’dan alın.
+mkdir -p ./private-export
+secram-pro --export ASSESSMENT_ID --output-dir ./private-export
+find ./private-export -maxdepth 1 -type f -printf '%f\n' | sort
+```
+
+Export sonucu JSON, Markdown, HTML, CSV ve ReportLab PDF içerir. Raporlar hassas veri içerebilir; `private-export/` dizinini Git’e eklemeyin. `unavailable_formats` doluysa çıkış kodu `1` olur ve eksik dosya başarı gibi sunulmaz.
+
+### Yerel OSV danışma verisi içe aktarma
+
+```bash
+secram-pro --import-osv /path/to/osv-snapshot.json
+```
+
+Bu işlem internetten veri çekmez. Snapshot’ın kaynağını, tarihini ve bütünlüğünü kendiniz doğrulayın. Eşleşme bulunmaması sistemin temiz olduğu anlamına gelmez; yalnız çalıştırılan Python ortamının PyPI paketleri desteklenir, RPM/DEB envanteri değildir.
+
+### Ayrı veri diziniyle çalışma
+
+```bash
+mkdir -p "$HOME/secram-work"
+secram-pro --data-dir "$HOME/secram-work" --doctor
+secram-pro --data-dir "$HOME/secram-work" --list-assessments
+```
+
+Aynı `--data-dir` ile iki SecRam-Pro instance’ı açmayın. Veritabanı, auth log, rapor ve audit kayıtları şifreli değildir; hassas veri için dosya izinleri ve disk şifrelemesi ayrıca sağlanmalıdır.
 
 ## Kendi yetkili hedefiniz
 
@@ -155,7 +276,7 @@ git remote add origin https://github.com/KULLANICI/SecRam-Pro.git
 git push -u origin main
 ```
 
-`KULLANICI` yerine kendi adınızı yazın; `git status --short` çıktısını önce kontrol edin. Bu teslimde GitHub’a push yapılmamıştır.
+`KULLANICI` yerine kendi adınızı yazın; `git status --short` çıktısını önce kontrol edin. Bu sürümün kaynak kodu `ramelano/secram-pro` repository’sine `main` branch’inde push edilmiştir.
 
 ## Lisans ve güvenlik
 
