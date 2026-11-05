@@ -43,9 +43,24 @@ jobs:
         env:
           QT_QPA_PLATFORM: offscreen
         run: .venv/bin/python -m pytest -q --junitxml=ci-test-results.xml
+      - name: Probe rootless user and network namespace
+        if: always()
+        run: |
+          set +e
+          if unshare -Urn true 2>namespace-probe-error.txt; then
+            echo "rootless_namespace=available" | tee namespace-probe.txt
+          else
+            status=$?
+            echo "rootless_namespace=unavailable" | tee namespace-probe.txt
+            echo "exit_code=${status}" | tee -a namespace-probe.txt
+            cat namespace-probe-error.txt | tee -a namespace-probe.txt
+          fi
       - name: Store test result
         if: always()
         uses: actions/upload-artifact@v4
         with:
           name: test-results-${{ matrix.name }}
-          path: ci-test-results.xml
+          path: |
+            ci-test-results.xml
+            namespace-probe.txt
+            namespace-probe-error.txt

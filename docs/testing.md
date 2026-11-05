@@ -1,13 +1,57 @@
 # Test ve kanıt yöntemi
 
-`QT_QPA_PLATFORM=offscreen python -m pytest -q` unit, storage, policy, adapter, gerçek loopback HTTP/TLS/Nmap, Qt ve gerçek rootless Lab/Orchestrator entegrasyonlarını birlikte yürütür. Test doubles/OSV-TEST kayıtları yalnız test fixture’larıdır; üretim sonuçları olarak gösterilmez.
+## Yerel test
 
-Gerçek otonom test: uygulama owned loopback HTTP Lab açar → izinli ephemeral TCP portuyla assessment oluşturur → Nmap’i çağırır → açık portta HEAD yapar → gerçek request telemetry okur → candidate findings/Purple oluşturur → gerçek JSON/MD/HTML/CSV/PDF dosyası yazar → own process/gateway kapanır. Nmap XML ve PDF magic/header kontrollü çıktıları kontrol edilir.
+```bash
+QT_QPA_PLATFORM=offscreen python -m pytest -q
+```
 
-Fedora/Debian yöntemi: resmi OCI kullanıcı alanı, hazırlanmış OS/Python paketleri, chroot ve mount/PID/network namespace; test sırasında yalnız lo aktif. Kernel host ile ortaktır. Python/SQLite/Qt/Nmap kullanıcı alanı uyumluluğudur; native SELinux, cgroups, firewall/systemd, NIC sürücüsü ve grafik masaüstü sertifikasyonu değildir. Normal kullanıcının bilgisayarında otomatik uygulanmaz.
+Bu komut policy, storage, adapter, gerçek loopback HTTP/TLS/Nmap, Qt ve rootless Lab/Orchestrator entegrasyonlarını birlikte çalıştırır. Test double’ları ve `OSV-TEST-*` kayıtları yalnızca test fixture’ıdır; üretim sonucu değildir.
 
-Kontrollü test makinesinde mevcut ortam için `bash scripts/compat_linux.sh update` ve `bash scripts/compat_linux.sh test`; ilk hazırlama için `prepare`. sudo/unshare/mount/chroot/skopeo/umoci gerekir. Package update internet kullanabilir; test fazı izole ağdadır.
+Gerçek otonom test akışı: uygulama kendi loopback HTTP Lab’ını açar → izinli ephemeral TCP portuyla assessment oluşturur → Nmap’i çağırır → açık portta HEAD yapar → telemetry okur → candidate finding/Purple oluşturur → JSON/MD/HTML/CSV/PDF yazar → kendi process/gateway’ini kapatır.
 
-GitHub CI üç OCI kullanıcı alanında test için tanımlanmıştır. GitHub’da henüz çalıştırılmamıştır; default CI container’da user namespace kapalıysa Lab gerçek testleri reason ile skip edilir. Skip, başarı kanıtı değildir; kendi native sisteminizde `--lab-demo` ile yeniden doğrulayın.
+## Fedora/Debian uyumluluk testi
 
-Son sonuçlar `release-report.md`, `release-test-results.xml`, `compat/` ve `compatibility-matrix.md` dosyalarında. Tarihsel phase1/2/3 raporları tarihsel kapsamlarını korur; güncel sürüm durumunu yeni rapor/matris belirler.
+Fedora 43 ve Debian 13 testleri resmi OCI kullanıcı alanlarında, aynı Linux kernel üzerinde yürütülür. Bu testler Python/SQLite/Qt/Nmap kullanıcı alanı uyumluluğunu gösterir; native SELinux, cgroups, firewall/systemd, NIC sürücüsü veya fiziksel grafik masaüstü sertifikasyonu değildir.
+
+Rootless Lab için iki ayrı koşul gerekir:
+
+1. `unshare -Urn true` çalışmalı.
+2. Uygulamanın `unshare` içindeki sabit Lab worker’ı loopback gateway’e başarıyla bağlanmalı.
+
+Host veya CI container user namespace’i kapatırsa Lab testleri **skip** edilir ve skip gerekçesi test çıktısında görünür. Skip, Lab’ın çalıştığı anlamına gelmez. `sudo` veya privileged fallback kullanılmaz.
+
+Kontrollü test makinesindeki dağıtım testleri:
+
+```bash
+bash scripts/compat_linux.sh prepare
+bash scripts/compat_linux.sh update
+bash scripts/compat_linux.sh test
+```
+
+Bu script kontrollü bir test makinesinde sudo/OCI/chroot/mount/network namespace araçları gerektirir; günlük kurulum aracı değildir.
+
+## GitHub Actions CI
+
+Workflow dosyası [`.github/workflows/tests.yml`](../.github/workflows/tests.yml) Ubuntu host üzerinde Ubuntu 24.04, Fedora 43 ve Debian 13 container matrix’i çalıştırır.
+
+Her matrix işi:
+
+- dağıtım paketlerini kurar,
+- Python lock dosyasını ve projeyi kurar,
+- `pytest` sonuçlarını JUnit XML olarak üretir,
+- `unshare -Urn true` probe sonucunu `namespace-probe.txt` artifact’ine koyar,
+- test ve probe çıktılarını GitHub Actions artifact’i olarak saklar.
+
+Böylece Fedora/Debian Lab testleri atlandıysa neden yalnızca varsayılmaz; CI artifact’inde namespace probe ve pytest skip nedeni incelenebilir. Namespace yetkisi olan bir CI runner’da aynı testler gerçek Lab akışını çalıştırır.
+
+README’deki CI rozeti GitHub Actions workflow durumuna bağlıdır. Yerel sandbox sonucu CI sonucu değildir; Ubuntu sandbox doğrulaması ayrı bir yerel kanıttır.
+
+## Kanıtı yorumlama
+
+- `passed`: Test senaryosu bu ortamda yürütüldü ve geçti.
+- `failed`: Kod veya ortam problemi var; başarı sayılmaz.
+- `skipped`: Koşul sağlanmadı; özellik doğrulanmış sayılmaz.
+- `inconclusive`: Ürün gerçek bir sonuç üretemedi; temiz veya güvenli sonucu değildir.
+
+Raporlarda `candidate`, `unknown` ve `inconclusive` ayrımları korunur. Açık port, IOC eşleşmesi, yeni süreç veya eksik header tek başına başarılı saldırı/kompromizasyon kanıtı değildir.

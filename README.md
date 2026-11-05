@@ -1,487 +1,117 @@
 # SecRam-Pro
 
-**Linux için çevrimdışı güvenlik değerlendirme programı.**
+[![Linux tests](https://github.com/ramelano/secram-pro/actions/workflows/tests.yml/badge.svg)](https://github.com/ramelano/secram-pro/actions/workflows/tests.yml)
 
-Bu programın grafik arayüzü vardır. Terminalden de kullanılabilir.
+**Linux için çevrimdışı Red Team, Blue Team ve Purple Team güvenlik değerlendirme platformu.**
 
-SecRam-Pro ile şunları yapabilirsiniz:
+SecRam-Pro; Python/PySide6 grafik arayüzü, SQLite kalıcılığı, gerçek Nmap TCP keşfi, HTTP/TLS gözlemleri, yerel Blue telemetrisi, Purple korelasyonu, kontrollü Lab ve raporlama işlevlerini tek Linux uygulamasında birleştirir.
 
-- Bilgisayarınızın temel durumunu görebilirsiniz.
-- Yetkili olduğunuz bir IP adresindeki izinli TCP portlarını Nmap ile kontrol edebilirsiniz.
-- HTTP/TLS başlıklarını ve sertifika bilgilerini inceleyebilirsiniz.
-- Süreç, ağ ve seçtiğiniz log dosyalarını izleyebilirsiniz.
-- Bulguları JSON, Markdown, HTML, CSV ve PDF olarak dışa aktarabilirsiniz.
-- Programın kendi güvenli eğitim Lab’ında örnek bir uçtan uca test çalıştırabilirsiniz.
+> **Sürüm:** v0.4.0 Linux geliştirme sürümü. Windows desteği yoktur. Bu proje üretim güvenlik ürünü, exploit-safe sandbox veya tam saldırı platformu değildir.
 
-## Red Team v0.1 ne yapar?
+## Ne işe yarar?
 
-Bu sürümde Red Team artık ayrı ve görünür bir kullanım alanıdır. Red Team v0.1 şu akışı gerçek olarak çalıştırır:
+- Yetkili tek IP ve izinli TCP portlarında Nmap connect keşfi yapar.
+- Red Team v0.1 akışında açık portları ve izinli HTTP/TLS kontrollerini raporlar.
+- Salt okunur Host, süreç, ağ ve seçilmiş log gözlemleri sağlar.
+- Purple zaman çizelgesi ve MITRE ATT&CK T1046 eşlemesi üretir.
+- JSON, Markdown, HTML, CSV ve PDF rapor çıkarır.
+- Kendi loopback Lab’ında kontrollü uçtan uca demo çalıştırır.
+- Temel işlevlerde ücretli API, bulut hesabı veya abonelik gerektirmez.
 
-1. Yazılı izinli tek bir IP adresini alır.
-2. Yalnızca izin verilen TCP portlarında Nmap connect keşfi yapar.
-3. Açık portları listeler.
-4. Yalnızca açıkça verilen `http`, `https` veya `tls` ipucuna göre izinli HTTP/TLS kontrolü yapar.
-5. Kanıtları bulgu ve rapor olarak kaydeder.
-6. Keşif tekniğini MITRE ATT&CK **T1046 — Network Service Scanning** ile eşleştirir.
+## İndir ve ilk kez çalıştır
 
-Grafik arayüzünde **Operasyonlar → Red Team** sekmesini açın. Değerlendirme seçin, hedef IP’yi ve izinli portları yazın, sonra **Yetkili Red Team keşfini başlat** düğmesine basın.
+### 1. İndir
 
-Komut satırından aynı akış:
+[**GitHub Release v0.4.0**](https://github.com/ramelano/secram-pro/releases/tag/v0.4.0)
 
-```bash
-./SecRam-Pro-v0.4.0-x86_64.AppImage \
-  --run-assessment /tmp/benim-degerlendirmem.json \
-  > red-team-sonucu.json
-```
+Doğrudan dosyalar:
 
-Sonuçta `profile` alanı `red_team_v0.1_scoped`, `red.technique` alanı ise `T1046 Network Service Scanning` olur.
+- [AppImage](https://github.com/ramelano/secram-pro/releases/latest/download/SecRam-Pro-v0.4.0-x86_64.AppImage)
+- [Portable tarball](https://github.com/ramelano/secram-pro/releases/latest/download/SecRam-Pro-v0.4.0-portable-x86_64.tar.gz)
+- [SHA256SUMS](https://github.com/ramelano/secram-pro/releases/latest/download/SHA256SUMS)
 
-Gerçek hedef verisi içermeyen örnek sonuç: [`docs/examples/red-team-sample-report.json`](docs/examples/red-team-sample-report.json).
-
-Bu sürüm **istismar, parola saldırısı, credential theft, kalıcılık, gizlenme/evasion, phishing, malware veya sınırsız komut çalıştırma yapmaz**. Bilinmeyen servis portlarına kör HTTP/TLS isteği göndermez. Red sonuçları gözlem ve aday bulgudur; açık port tek başına zafiyet kanıtı değildir.
-
-> **Önemli:** Bu program yalnızca size ait veya yazılı izin aldığınız sistemlerde kullanılmalıdır. Program Windows için değildir; bu sürüm Linux içindir.
-
-## Yetki kaydı ne anlama gelir?
-
-Değerlendirmedeki `approved_by` ve `evidence_reference` alanları, izin bilgisini ve dayanağını işlem kaydına ekler. **Bu alanlar serbest metindir; SecRam-Pro yetkiyi bağımsız olarak doğrulayamaz. Denetim izi sağlar, yetkiyi doğrulamaz.**
-
-Buna rağmen araç kapsam kapısını atlamaz: her görevde işlem adı, literal IP/CIDR, port, başlangıç/bitiş zamanı ve değerlendirme kimliği yeniden kontrol edilir. Süresi bitmiş, kapsam dışı veya izin verilmeyen işlem/port görevi reddedilir.
-
-## En kolay kullanım: AppImage
-
-AppImage, kurulum gerektirmeyen tek dosyalık Linux paketidir.
-
-### 1. AppImage dosyasını indirin
-
-Şu dosyayı GitHub Release sayfasından indirin:
-
-[**SecRam-Pro v0.4.0 Release sayfası**](https://github.com/ramelano/secram-pro/releases/tag/v0.4.0)
-
-Doğrudan AppImage indirme bağlantısı:
-
-[**SecRam-Pro-v0.4.0-x86_64.AppImage**](https://github.com/ramelano/secram-pro/releases/latest/download/SecRam-Pro-v0.4.0-x86_64.AppImage)
-
-```text
-SecRam-Pro-v0.4.0-x86_64.AppImage
-```
-
-İsterseniz [portable tarball’ı](https://github.com/ramelano/secram-pro/releases/latest/download/SecRam-Pro-v0.4.0-portable-x86_64.tar.gz) da indirebilirsiniz.
-
-### İndirme doğrulaması
-
-SHA256 dosyasını indirin:
-
-```bash
-wget https://github.com/ramelano/secram-pro/releases/latest/download/SHA256SUMS
-sha256sum -c SHA256SUMS --ignore-missing
-```
-
-Çıktıda AppImage veya tarball için `OK` görmelisiniz. `FAILED` görürseniz dosyayı çalıştırmayın; yeniden indirin.
-
-Dosyayı bilgisayarınızda örneğin `İndirilenler` klasörüne koyun.
-
-### 2. Terminali açın
-
-Terminali açın ve dosyanın bulunduğu klasöre gidin. Dosya `İndirilenler` klasöründeyse:
-
-```bash
-cd ~/İndirilenler
-```
-
-Klasörünüzün adı farklıysa o klasöre gidin.
-
-### 3. Dosyaya çalıştırma izni verin
+### 2. Doğrula ve çalıştır
 
 ```bash
 chmod +x SecRam-Pro-v0.4.0-x86_64.AppImage
-```
-
-Bu komut yalnızca dosyanın çalıştırılabilmesini sağlar.
-
-### 4. Bilgisayarın uygun olup olmadığını kontrol edin
-
-```bash
+wget https://github.com/ramelano/secram-pro/releases/latest/download/SHA256SUMS
+sha256sum -c SHA256SUMS --ignore-missing
 ./SecRam-Pro-v0.4.0-x86_64.AppImage --doctor
-```
-
-Bu komut tarama yapmaz. Sadece Python, Nmap, `ip`, `unshare` ve benzeri gereksinimleri kontrol eder.
-
-### 5. Programı açın
-
-```bash
+./SecRam-Pro-v0.4.0-x86_64.AppImage --self-check
 ./SecRam-Pro-v0.4.0-x86_64.AppImage
 ```
 
-Grafik arayüz açılacaktır.
-
-### 6. İlk denemeyi yapın
-
-Önce programın kendi eğitim Lab’ını çalıştırın:
+### 3. İlk güvenli demo
 
 ```bash
 ./SecRam-Pro-v0.4.0-x86_64.AppImage --lab-demo
 ```
 
-Bu komut yalnızca SecRam-Pro’nun kendi geçici `127.0.0.1` Lab’ını kullanır. İnternetteki veya başka bir bilgisayardaki hedefi taramaz.
+Bu demo yalnız SecRam-Pro’nun oluşturduğu loopback Lab’ını kullanır; internetteki veya başka bir bilgisayardaki hedefi taramaz.
 
-## AppImage açılmazsa
-
-Bazı Linux sistemlerinde FUSE kapalı olabilir. Bu durumda şu komutu deneyin:
+AppImage açılmazsa FUSE’suz çalıştırmayı deneyin:
 
 ```bash
 APPIMAGE_EXTRACT_AND_RUN=1 ./SecRam-Pro-v0.4.0-x86_64.AppImage
 ```
 
-Aynı yöntemle test komutları da çalıştırılabilir:
+## Grafik arayüzü
 
-```bash
-APPIMAGE_EXTRACT_AND_RUN=1 ./SecRam-Pro-v0.4.0-x86_64.AppImage --doctor
-```
+Programı açtıktan sonra:
 
-## Portable tarball ile kullanım
+1. **Değerlendirmeler** bölümünde yetkili bir kapsam oluşturun.
+2. Hedef IP, izinli portlar, izin süresi ve işlemleri açıkça seçin.
+3. **Operasyonlar → Red Team** sekmesini açın.
+4. **Yetkili Red Team keşfini başlat** düğmesine basın.
+5. Sonuçları **Görevler**, **Bulgular**, **Blue**, **Purple** ve **Raporlar** sekmelerinde inceleyin.
 
-AppImage yerine `.tar.gz` dosyasını kullanmak isterseniz:
+Gerçek hedeflerde yalnız size ait veya yazılı izin aldığınız sistemleri kullanın.
 
-```bash
-tar -xzf SecRam-Pro-v0.4.0-portable-x86_64.tar.gz
-cd SecRam-Pro.AppDir
-./AppRun --doctor
-./AppRun --self-check
-./AppRun
-```
+## Red Team v0.1
 
-Programı kapatmak için grafik pencereyi normal şekilde kapatın.
+Red Team v0.1 gerçek olarak şunları yapar:
 
-## Programın grafik arayüzünde ne yapacağım?
+- Tek literal IP’de yalnızca yetkilendirilmiş TCP portlarını tarar.
+- Açık portları listeler.
+- Açıkça verilen HTTP/HTTPS/TLS ipuçlarına göre takip kontrolü yapar.
+- Kanıtları raporlar ve **T1046 — Network Service Scanning** ile eşleştirir.
 
-Program açıldıktan sonra genel sıra şöyledir:
+Sonuç profili `red_team_v0.1_scoped` olarak işaretlenir. Gerçek hedef verisi içermeyen örnek çıktı: [red-team-sample-report.json](docs/examples/red-team-sample-report.json).
 
-1. **Değerlendirmeler** bölümünü açın.
-2. Yeni bir değerlendirme oluşturun.
-3. Hedef IP adresini yazın.
-4. Yalnızca izin verdiğiniz portları seçin.
-5. Yetkili kişi ve izin kanıtını yazın.
-6. İzin süresini belirleyin.
-7. İşlemleri seçin.
-8. Değerlendirmeyi başlatın.
-9. Sonuçları **Görevler**, **Bulgular**, **Blue**, **Purple** ve **Raporlar** bölümlerinden inceleyin.
+Bu sürümde parola saldırısı, credential theft, phishing, malware/C2, kalıcılık, gizlenme/evasion, exploit veya sınırsız shell yoktur. Açık port tek başına zafiyet kanıtı değildir; bulgular gözlem ve aday bulgu niteliğindedir.
 
-Bir hedefi taramak için hedef sahibi olmanız veya açık yazılı izniniz olması gerekir. Programın kapsam ve süre kontrollerini kapatmayın.
+## Yetki sınırı
 
-## Terminalden temel komutlar
+`approved_by` ve `evidence_reference` alanları serbest metindir. **Denetim izi sağlar, yetkiyi doğrulamaz.**
 
-Aşağıdaki örneklerde AppImage adı kullanılmıştır. Kaynaktan kurulum yaptıysanız aynı yere `secram-pro` yazabilirsiniz.
-
-### Programı kontrol etme
-
-```bash
-./SecRam-Pro-v0.4.0-x86_64.AppImage --doctor
-```
-
-Ne yapar: Bilgisayarda gerekli araçların bulunup bulunmadığını gösterir.
-
-```bash
-./SecRam-Pro-v0.4.0-x86_64.AppImage --self-check
-```
-
-Ne yapar: SecRam-Pro’nun temel çekirdek işlevlerini kontrol eder. Hedef taramaz.
-
-```bash
-./SecRam-Pro-v0.4.0-x86_64.AppImage --host-snapshot
-```
-
-Ne yapar: Kendi Linux bilgisayarınızın salt okunur durum özetini çıkarır. Sistem ayarlarını değiştirmez.
-
-### Grafik arayüzünü açma
-
-```bash
-./SecRam-Pro-v0.4.0-x86_64.AppImage
-```
-
-### Kendi eğitim Lab’ını çalıştırma
-
-```bash
-./SecRam-Pro-v0.4.0-x86_64.AppImage --lab-demo > lab-sonucu.json
-```
-
-Sonucu görmek için:
-
-```bash
-cat lab-sonucu.json
-```
-
-Komutun çıkış kodunu görmek için:
-
-```bash
-echo $?
-```
-
-`0` başarılı, `1` hata anlamına gelir. Lab için gerekli Linux namespace izni yoksa program bunu açıkça bildirir; sahte başarı üretmez.
-
-## Yetkili bir hedefi kontrol etme
-
-Önce örnek profili kopyalayın:
-
-```bash
-cp examples/assessment-local.json /tmp/benim-degerlendirmem.json
-```
-
-Dosyayı düzenleyin:
-
-```bash
-nano /tmp/benim-degerlendirmem.json
-```
-
-Dosyada en az şu bilgileri doğru yazın:
-
-- `target`: Kontrol edilecek IP adresi.
-- `cidrs`: İzin verilen ağ veya IP aralığı.
-- `ports`: Kontrol edilmesine izin verilen portlar.
-- `approved_by`: İzni veren kişi.
-- `evidence_reference`: İzin belgesi, ticket veya kayıt numarası.
-- `allowed_operations`: Yapılmasına izin verilen işlemler.
-
-Basit örnek:
-
-```json
-{
-  "title": "Kendi test sunucum",
-  "cidrs": ["127.0.0.1/32"],
-  "approved_by": "Sistem sahibi",
-  "evidence_reference": "izin-kaydi-123",
-  "expires_hours": 1,
-  "allowed_operations": ["orchestrator.run", "nmap.tcp_scan"],
-  "ports": [8000],
-  "target": "127.0.0.1"
-}
-```
-
-Profili çalıştırın:
-
-```bash
-./SecRam-Pro-v0.4.0-x86_64.AppImage \
-  --run-assessment /tmp/benim-degerlendirmem.json \
-  > degerlendirme-sonucu.json
-```
-
-Sonucu okuyun:
-
-```bash
-cat degerlendirme-sonucu.json
-```
-
-> Örnek dosyadaki `127.0.0.1` ve `8000` değerlerini değiştirmeden başka bir hedefi kontrol etmeyin.
-
-## Değerlendirmeleri listeleme
-
-```bash
-./SecRam-Pro-v0.4.0-x86_64.AppImage --list-assessments
-```
-
-Çıktıda her değerlendirme için bir kimlik bulunur. Bu kimlik rapor almak için kullanılır.
-
-## Rapor oluşturma
-
-Önce rapor klasörü oluşturun:
-
-```bash
-mkdir -p private-export
-```
-
-`ASSESSMENT_ID` yerine değerlendirme listesinden aldığınız gerçek kimliği yazın:
-
-```bash
-./SecRam-Pro-v0.4.0-x86_64.AppImage \
-  --export ASSESSMENT_ID \
-  --output-dir ./private-export
-```
-
-Oluşan dosyaları görün:
-
-```bash
-find private-export -maxdepth 1 -type f -printf '%f\n' | sort
-```
-
-Raporlar hassas bilgiler içerebilir. `private-export` klasörünü GitHub’a yüklemeyin.
-
-## OSV verisi içe aktarma
-
-Elinizde yerel bir OSV JSON snapshot’ı varsa:
-
-```bash
-./SecRam-Pro-v0.4.0-x86_64.AppImage \
-  --import-osv /dosya/yolu/osv.json
-```
-
-Bu komut internetten veri indirmez. OSV dosyasının güvenilirliğini, tarihini ve kaynağını kendiniz kontrol edin.
-
-## Kaynak koddan kurulum
-
-Bu yöntem geliştiriciler içindir. Python 3.12 veya daha yeni sürüm ve Linux gerekir.
-
-### Fedora
-
-```bash
-sudo dnf install python3 python3-pip nmap util-linux iproute \
-  mesa-libGL mesa-libEGL libxkbcommon fontconfig dbus-libs glib2 dejavu-sans-fonts
-```
-
-### Debian veya Ubuntu
-
-```bash
-sudo apt update
-sudo apt install python3 python3-venv python3-pip nmap util-linux iproute2 \
-  libgl1 libegl1 libxkbcommon0 libfontconfig1 libdbus-1-3 \
-  libglib2.0-0t64 fonts-dejavu-core
-```
-
-### Python ortamını oluşturma
-
-SecRam-Pro klasörüne gidin:
-
-```bash
-cd secram-pro
-```
-
-Sanal Python ortamı oluşturun:
-
-```bash
-python3 -m venv .venv
-```
-
-Ortamı etkinleştirin:
-
-```bash
-source .venv/bin/activate
-```
-
-Programı kurun:
-
-```bash
-python -m pip install -e .
-```
-
-Kurulumu kontrol edin:
-
-```bash
-secram-pro --doctor
-```
-
-Programı açın:
-
-```bash
-secram-pro
-```
-
-> `sudo secram-pro` kullanmayın. Programı normal kullanıcı hesabıyla çalıştırın.
-
-## Program nerede veri saklar?
-
-Varsayılan veri klasörü genellikle şuradadır:
-
-```text
-~/.local/share/secram-pro
-```
-
-İsterseniz başka bir klasör belirleyebilirsiniz:
-
-```bash
-mkdir -p "$HOME/secram-verileri"
-./SecRam-Pro-v0.4.0-x86_64.AppImage \
-  --data-dir "$HOME/secram-verileri"
-```
-
-Aynı veri klasörünü aynı anda iki SecRam-Pro programında kullanmayın.
-
-Veritabanı ve raporlar şifreli değildir. Hassas sistemlerde dosya izinleri ve disk şifrelemesi kullanın.
-
-## Sorun olursa
-
-Önce şu komutları çalıştırın:
-
-```bash
-./SecRam-Pro-v0.4.0-x86_64.AppImage --doctor
-./SecRam-Pro-v0.4.0-x86_64.AppImage --self-check
-```
-
-### `nmap bulunamadı` diyorsa
-
-Fedora:
-
-```bash
-sudo dnf install nmap
-```
-
-Debian/Ubuntu:
-
-```bash
-sudo apt install nmap
-```
-
-### AppImage çalışmıyorsa
-
-```bash
-APPIMAGE_EXTRACT_AND_RUN=1 ./SecRam-Pro-v0.4.0-x86_64.AppImage --doctor
-```
-
-### Lab çalışmıyorsa
-
-Linux sistemi rootless user/network namespace kullanımına izin vermiyor olabilir. Bu durumda `--lab-demo` çalışmaz. Bu bir tarama başarısı değildir; izin verilen kendi hedefleriniz için diğer modülleri ayrıca kullanabilirsiniz.
-
-### Grafik arayüzü açılmıyorsa
-
-Başka bir terminalde şu kontrolü yapın:
-
-```bash
-./SecRam-Pro-v0.4.0-x86_64.AppImage --doctor
-```
-
-Headless test için:
-
-```bash
-QT_QPA_PLATFORM=offscreen \
-  ./SecRam-Pro-v0.4.0-x86_64.AppImage --smoke-test
-```
-
-Daha ayrıntılı sorun giderme için [`docs/troubleshooting.md`](docs/troubleshooting.md) dosyasına bakın.
+Uygulama her görevde değerlendirme kimliğini, işlemi, literal hedefi, portu ve yetki süresini yeniden kontrol eder. Kapsam dışı, izin verilmeyen veya süresi bitmiş görevler reddedilir.
 
 ## Güvenlik sınırları
 
-Bu sürüm gerçek Nmap TCP kontrolü, HTTP/TLS gözlemi, yerel Blue telemetrisi, Purple korelasyonu ve raporlama yapar. Ancak tam saldırı platformu değildir.
-
-Aşağıdakiler bu sürümde yoktur:
-
-- Windows desteği.
-- Nuclei, ZAP, Metasploit veya SQLmap entegrasyonu.
-- UDP, NSE, DNS/ARP keşfi veya toplu ağ taraması.
-- Genel CVE/CVSS/CPE motoru.
-- VM veya tam konteyner izolasyonu.
-- Güvenilmeyen exploit çalıştırma güvenliği.
-
-AppImage ve portable tarball Python/Qt dosyalarını taşır. Nmap, `ip`, `unshare`, Linux kernel yetenekleri ve grafik sürücüleri bilgisayarınızdan gelir.
+- Linux-only; Windows desteği yoktur.
+- Nmap profili `-sT` TCP connect keşfiyle sınırlıdır.
+- DNS/hostname, toplu CIDR taraması, UDP, NSE ve serbest Nmap argümanları yoktur.
+- AppImage tam VM/konteyner izolasyonu değildir.
+- Veritabanı ve raporlar şifreli değildir; hassas dosyaları GitHub’a yüklemeyin.
+- Rootless Lab kernel ve dosya sistemi host ile paylaşır; güvenilmeyen exploit veya zararlı yazılım çalıştırmak için değildir.
 
 ## Test durumu
 
-Son doğrulama sonuçları:
+GitHub Actions Linux workflow’u Ubuntu host üzerinde Ubuntu, Fedora ve Debian kullanıcı alanlarını test eder. Rootless namespace yetkisi olmayan ortamlarda Lab testleri açık gerekçeyle atlanır; bu atlama başarı kanıtı değildir. Ayrıntı: [test yöntemi](docs/testing.md).
 
-- Ubuntu sandbox: `180 passed`.
-- Fedora 43: `176 passed`, 4 Lab testi namespace izni nedeniyle atlandı.
-- Debian 13: `176 passed`, 4 Lab testi namespace izni nedeniyle atlandı.
-- AppImage: `--doctor` ve `--self-check` başarılı.
-- Portable tarball: `--doctor` ve `--self-check` başarılı.
+Yerel ayrıntılı doğrulama ve uyumluluk belgeleri:
 
-Ayrıntılar:
-
-- [Portable kullanım rehberi](docs/portable.md)
-- [Kurulum ve sorun giderme](docs/troubleshooting.md)
-- [Test yöntemi](docs/testing.md)
+- [Kurulum](docs/installation.md)
+- [Komut satırı kullanımı](docs/cli.md)
+- [Sorun giderme](docs/troubleshooting.md)
 - [Uyumluluk matrisi](docs/compatibility-matrix.md)
 - [Son sürüm raporu](docs/release-report.md)
 - [Gereksinim matrisi](docs/requirements-matrix.md)
+- [Kod tabanlı güvenlik incelemesi](docs/security-review.md)
+- [Güvenlik politikası](SECURITY.md)
 
 ## Lisans
 
-Kaynak kodu MIT lisanslıdır: [`LICENSE`](LICENSE).
+Kaynak kodu [MIT](LICENSE) lisanslıdır.
 
 Yalnızca sahip olduğunuz veya açıkça yetkilendirildiğiniz sistemlerde kullanın.
