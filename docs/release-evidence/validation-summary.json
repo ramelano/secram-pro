@@ -1,0 +1,75 @@
+{
+  "version": "0.4.0",
+  "real_network_interaction": true,
+  "external_targets": false,
+  "target": "127.0.0.1",
+  "port": 46737,
+  "workflow_state": "succeeded",
+  "workflow_status": "complete",
+  "duration_seconds": 0.9826725550001356,
+  "process_highwater_rss_kib": 80568,
+  "resource_scope": "This Python process lifetime highwater; not children/host or per-operation peak",
+  "operations": [
+    {
+      "operation": "blue.monitor",
+      "state": "succeeded"
+    },
+    {
+      "operation": "nmap.tcp_scan",
+      "state": "succeeded"
+    },
+    {
+      "operation": "web.http_headers",
+      "state": "succeeded"
+    }
+  ],
+  "nmap_xml_sha256": "0d647fa2e9424a30566ef8f82f786f7336be8978490cc7f8c06c8c6b718349d9",
+  "nmap_status": "complete",
+  "candidate_findings": 4,
+  "event_sources": {
+    "host": 1,
+    "process": 1,
+    "network": 1,
+    "lab_sensor": 1
+  },
+  "purple_metrics": {
+    "tasks_total": 3,
+    "tasks_executed": 3,
+    "tasks_excluded": 0,
+    "events_total": 4,
+    "events_considered": 1,
+    "events_ignored": 3,
+    "observations": 1,
+    "alerts": 0,
+    "candidate_correlations": 0,
+    "detected_tasks": 0,
+    "valid_test_denominator": 0,
+    "coverage": "unknown",
+    "detection_status": "unknown",
+    "detection_rate": null,
+    "false_positive_rate": null,
+    "mean_verified_detection_latency_seconds": null
+  },
+  "report_formats": [
+    "csv",
+    "html",
+    "json",
+    "md",
+    "pdf"
+  ],
+  "report_hashes": {
+    "json": "47b7d7ba175e6490b2096d63eddc227a41e66ca914a7f160ba2c39e7ea721db0",
+    "md": "455fb3171c9464f5e20a347261e5e5082893321ca3f63cb6c2309325ebf91176",
+    "html": "ce2036d0dd124c4a1dd00bae2ac0f72c261675968cc869109306909d21c82836",
+    "csv": "24654898f5852fcdf69f845273f2617b890dd5ad258ca6c5b0d06a1b1154d9e9",
+    "pdf": "9766faa535f1e41b031f36b910b025e01babcc7782acf590e428c74a6bdac755"
+  },
+  "example_pdf_sha256": "9766faa535f1e41b031f36b910b025e01babcc7782acf590e428c74a6bdac755",
+  "lab_isolation": "Rootless unshare -Urn user+network namespace with a loopback-only child; the kernel and filesystem are shared, so this is not safe for untrusted exploits and is not equivalent to Podman or KVM. The 127.0.0.1 gateway deliberately crosses the namespace boundary.",
+  "production_ready": false,
+  "budget": {
+    "initial_planning_credits": 3100,
+    "minimum_reserve_credits": 620,
+    "actual_used_credits": null
+  }
+}

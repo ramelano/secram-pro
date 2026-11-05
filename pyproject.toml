@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=69", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "secram-pro"
+version = "0.4.0"
+description = "Offline Linux scoped assessment, telemetry, orchestration and reports"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.12"
+dependencies = [
+    "PySide6>=6.7,<7",
+    "pydantic>=2.7,<3",
+    "SQLAlchemy>=2.0,<3",
+    "psutil>=6,<8",
+    "defusedxml>=0.7,<1",
+    "cryptography>=43,<49",
+    "reportlab>=4,<5",
+    "packaging>=24,<27",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=8,<10"]
+
+[project.scripts]
+secram-pro = "secram.app:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-ra"

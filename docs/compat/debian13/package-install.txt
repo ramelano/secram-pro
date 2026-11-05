@@ -1,0 +1,17 @@
+Obtaining file:///opt/project
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: secram-pro
+  Building editable for secram-pro (pyproject.toml): started
+  Building editable for secram-pro (pyproject.toml): finished with status 'done'
+  Created wheel for secram-pro: filename=secram_pro-0.4.0-0.editable-py3-none-any.whl size=7343 sha256=c6a67fff1c61fbacdbbb5d6f653e7f5faea46696d183ab3756f1f898e39c28e6
+  Stored in directory: /tmp/pip-ephem-wheel-cache-4uusktbo/wheels/97/ca/0f/b193b5de384059b98167c17fdd192325790651673015eb8fed
+Successfully built secram-pro
+Installing collected packages: secram-pro
+  Attempting uninstall: secram-pro
+    Found existing installation: secram-pro 0.3.0
+    Uninstalling secram-pro-0.3.0:
+      Successfully uninstalled secram-pro-0.3.0
+Successfully installed secram-pro-0.4.0

@@ -1,0 +1,589 @@
+{
+  "validation": "real local-only HTTP/TLS",
+  "http_port": 33649,
+  "tls_port": 35773,
+  "tasks": [
+    {
+      "id": "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6",
+      "assessment_id": "a8bdb164-9165-44c1-8c0f-0eb204683cf6",
+      "name": "HTTP",
+      "operation": "web.http_headers",
+      "target": "127.0.0.1",
+      "port": 33649,
+      "params": {
+        "scheme": "http"
+      },
+      "dependencies": [],
+      "state": "succeeded",
+      "result": {
+        "operation": "web.http_headers",
+        "target": "127.0.0.1",
+        "port": 33649,
+        "collected_at": "2026-11-03T17:34:52.225727+00:00",
+        "status": "complete",
+        "observations": {
+          "transport": {
+            "scheme": "http",
+            "address_family": "ipv4",
+            "verification": "not_applicable"
+          },
+          "response": {
+            "status_line": {
+              "protocol": "HTTP/1.0",
+              "status_code": 200,
+              "reason": "OK"
+            },
+            "status_code": 200,
+            "content_type": "text/html",
+            "content_type_media_type": "text/html",
+            "html_or_xhtml": true,
+            "security_headers": {},
+            "sensitive_header_names_omitted": [
+              "set-cookie"
+            ],
+            "header_bytes": 170
+          }
+        },
+        "finding_candidates": [
+          {
+            "rule_id": "web.missing_content_security_policy",
+            "title": "Content-Security-Policy is absent from an HTML response",
+            "severity": "low",
+            "evidence": {
+              "observation_confirmed": true,
+              "impact_verified": false,
+              "header": "content-security-policy",
+              "content_type": "text/html",
+              "status_code": 200
+            },
+            "recommendation": "Consider a narrowly scoped Content-Security-Policy appropriate to the application.",
+            "limitations": [
+              "The observation is not proof of exploitability; impact was not verified."
+            ]
+          },
+          {
+            "rule_id": "web.missing_frame_policy",
+            "title": "Frame-embedding policy is absent from an HTML response",
+            "severity": "low",
+            "evidence": {
+              "observation_confirmed": true,
+              "impact_verified": false,
+              "header": "x-frame-options",
+              "content_type": "text/html",
+              "status_code": 200
+            },
+            "recommendation": "Set an appropriate X-Frame-Options policy or a CSP frame-ancestors policy.",
+            "limitations": [
+              "The observation is not proof of exploitability; impact was not verified."
+            ]
+          },
+          {
+            "rule_id": "web.missing_nosniff",
+            "title": "X-Content-Type-Options is absent",
+            "severity": "info",
+            "evidence": {
+              "observation_confirmed": true,
+              "impact_verified": false,
+              "header": "x-content-type-options",
+              "content_type": "text/html",
+              "status_code": 200
+            },
+            "recommendation": "Consider sending X-Content-Type-Options: nosniff where appropriate.",
+            "limitations": [
+              "The observation is not proof of exploitability; impact was not verified."
+            ]
+          },
+          {
+            "rule_id": "web.missing_referrer_policy",
+            "title": "Referrer-Policy is absent",
+            "severity": "info",
+            "evidence": {
+              "observation_confirmed": true,
+              "impact_verified": false,
+              "header": "referrer-policy",
+              "content_type": "text/html",
+              "status_code": 200
+            },
+            "recommendation": "Consider selecting and sending an explicit Referrer-Policy.",
+            "limitations": [
+              "The observation is not proof of exploitability; impact was not verified."
+            ]
+          }
+        ],
+        "limitations": [
+          "Only the fixed root HEAD response was observed; no body was retained."
+        ],
+        "evidence_sha256": "590d346a5c366a1d8405471126dd0f0cc9d15855807bdf45b81222e8ecabcd20",
+        "findings": [
+          {
+            "id": "9dccb49a34b997e6bb896d1fb5745ff2429f95a664c550196f05ae468f6955e8",
+            "assessment_id": "a8bdb164-9165-44c1-8c0f-0eb204683cf6",
+            "rule_id": "web.missing_content_security_policy",
+            "title": "Content-Security-Policy is absent from an HTML response",
+            "target": "127.0.0.1",
+            "port": 33649,
+            "severity": "low",
+            "status": "candidate",
+            "evidence": [
+              {
+                "observation_confirmed": true,
+                "impact_verified": false,
+                "header": "content-security-policy",
+                "content_type": "text/html",
+                "status_code": 200,
+                "evidence_sha256": "590d346a5c366a1d8405471126dd0f0cc9d15855807bdf45b81222e8ecabcd20",
+                "source_operation": "web.http_headers",
+                "source_task_id": "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+              }
+            ],
+            "recommendation": "Consider a narrowly scoped Content-Security-Policy appropriate to the application.",
+            "limitations": [
+              "Only the fixed root HEAD response was observed; no body was retained.",
+              "The observation is not proof of exploitability; impact was not verified."
+            ],
+            "observed_at": "2026-11-03T17:34:52.225727Z",
+            "task_ids": [
+              "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+            ]
+          },
+          {
+            "id": "d2d19730d57ab6e0479a0d8ca298f48ebb0ed8f13c3b52309f78e7e3dfd75b94",
+            "assessment_id": "a8bdb164-9165-44c1-8c0f-0eb204683cf6",
+            "rule_id": "web.missing_frame_policy",
+            "title": "Frame-embedding policy is absent from an HTML response",
+            "target": "127.0.0.1",
+            "port": 33649,
+            "severity": "low",
+            "status": "candidate",
+            "evidence": [
+              {
+                "observation_confirmed": true,
+                "impact_verified": false,
+                "header": "x-frame-options",
+                "content_type": "text/html",
+                "status_code": 200,
+                "evidence_sha256": "590d346a5c366a1d8405471126dd0f0cc9d15855807bdf45b81222e8ecabcd20",
+                "source_operation": "web.http_headers",
+                "source_task_id": "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+              }
+            ],
+            "recommendation": "Set an appropriate X-Frame-Options policy or a CSP frame-ancestors policy.",
+            "limitations": [
+              "Only the fixed root HEAD response was observed; no body was retained.",
+              "The observation is not proof of exploitability; impact was not verified."
+            ],
+            "observed_at": "2026-11-03T17:34:52.225727Z",
+            "task_ids": [
+              "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+            ]
+          },
+          {
+            "id": "8415d8c088c024979171e998ae031f27b4f6b7c9e234a0afaf5ca7a586977565",
+            "assessment_id": "a8bdb164-9165-44c1-8c0f-0eb204683cf6",
+            "rule_id": "web.missing_nosniff",
+            "title": "X-Content-Type-Options is absent",
+            "target": "127.0.0.1",
+            "port": 33649,
+            "severity": "info",
+            "status": "candidate",
+            "evidence": [
+              {
+                "observation_confirmed": true,
+                "impact_verified": false,
+                "header": "x-content-type-options",
+                "content_type": "text/html",
+                "status_code": 200,
+                "evidence_sha256": "590d346a5c366a1d8405471126dd0f0cc9d15855807bdf45b81222e8ecabcd20",
+                "source_operation": "web.http_headers",
+                "source_task_id": "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+              }
+            ],
+            "recommendation": "Consider sending X-Content-Type-Options: nosniff where appropriate.",
+            "limitations": [
+              "Only the fixed root HEAD response was observed; no body was retained.",
+              "The observation is not proof of exploitability; impact was not verified."
+            ],
+            "observed_at": "2026-11-03T17:34:52.225727Z",
+            "task_ids": [
+              "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+            ]
+          },
+          {
+            "id": "2f997d90d286d34953892f1d28f9fd0905c7ff28b7e3cfdbf088b12f7f9f4398",
+            "assessment_id": "a8bdb164-9165-44c1-8c0f-0eb204683cf6",
+            "rule_id": "web.missing_referrer_policy",
+            "title": "Referrer-Policy is absent",
+            "target": "127.0.0.1",
+            "port": 33649,
+            "severity": "info",
+            "status": "candidate",
+            "evidence": [
+              {
+                "observation_confirmed": true,
+                "impact_verified": false,
+                "header": "referrer-policy",
+                "content_type": "text/html",
+                "status_code": 200,
+                "evidence_sha256": "590d346a5c366a1d8405471126dd0f0cc9d15855807bdf45b81222e8ecabcd20",
+                "source_operation": "web.http_headers",
+                "source_task_id": "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+              }
+            ],
+            "recommendation": "Consider selecting and sending an explicit Referrer-Policy.",
+            "limitations": [
+              "Only the fixed root HEAD response was observed; no body was retained.",
+              "The observation is not proof of exploitability; impact was not verified."
+            ],
+            "observed_at": "2026-11-03T17:34:52.225727Z",
+            "task_ids": [
+              "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+            ]
+          }
+        ]
+      },
+      "error": null,
+      "created_at": "2026-11-03T17:34:52.173580Z",
+      "started_at": "2026-11-03T17:34:52.184915Z",
+      "finished_at": "2026-11-03T17:34:52.229942Z"
+    },
+    {
+      "id": "4226f44a-00d7-4546-920b-5e2b0ceef97e",
+      "assessment_id": "a8bdb164-9165-44c1-8c0f-0eb204683cf6",
+      "name": "TLS",
+      "operation": "web.tls_check",
+      "target": "127.0.0.1",
+      "port": 35773,
+      "params": {},
+      "dependencies": [],
+      "state": "succeeded",
+      "result": {
+        "operation": "web.tls_check",
+        "target": "127.0.0.1",
+        "port": 35773,
+        "collected_at": "2026-11-03T17:34:52.240579+00:00",
+        "status": "complete",
+        "observations": {
+          "verification": {
+            "status": "untrusted",
+            "error_type": "SSLCertVerificationError",
+            "error_reason": "[SSL: CERTIFICATE_VERIFY_FAILED] certificate verify failed: self-signed certificate (_ssl.c:1000)"
+          },
+          "certificate": {
+            "sha256": "ccfc3cb482f45690e8b8f551bc3fad95f1e651370a4b077d013cd26d7f0d6291",
+            "not_valid_before": "2026-11-01T17:34:52+00:00",
+            "not_valid_after": "2026-11-02T17:34:52+00:00",
+            "expired": true,
+            "not_yet_valid": false,
+            "key_algorithm": "RSA",
+            "key_size": 2048,
+            "ip_san_match": true
+          },
+          "negotiated": {
+            "protocol": "TLSv1.3",
+            "cipher": "TLS_AES_256_GCM_SHA384",
+            "cipher_protocol": "TLSv1.3",
+            "cipher_bits": 256
+          }
+        },
+        "finding_candidates": [
+          {
+            "rule_id": "tls.untrusted_certificate",
+            "title": "TLS peer certificate could not be verified by the default trust checks",
+            "severity": "medium",
+            "evidence": {
+              "observation_confirmed": true,
+              "impact_verified": false,
+              "verification_status": "untrusted",
+              "certificate_sha256": "ccfc3cb482f45690e8b8f551bc3fad95f1e651370a4b077d013cd26d7f0d6291"
+            },
+            "recommendation": "Use a certificate chain trusted by the intended clients and keep trust configuration deliberate.",
+            "limitations": [
+              "The observation is public certificate state; impact was not verified."
+            ]
+          },
+          {
+            "rule_id": "tls.certificate_expired",
+            "title": "TLS peer certificate is expired",
+            "severity": "medium",
+            "evidence": {
+              "observation_confirmed": true,
+              "impact_verified": false,
+              "certificate_sha256": "ccfc3cb482f45690e8b8f551bc3fad95f1e651370a4b077d013cd26d7f0d6291",
+              "not_valid_after": "2026-11-02T17:34:52+00:00"
+            },
+            "recommendation": "Renew the certificate before its validity end and deploy the renewed chain.",
+            "limitations": [
+              "The observation is public certificate state; impact was not verified."
+            ]
+          }
+        ],
+        "limitations": [
+          "The verified TLS handshake failed; the certificate was collected by one unverified handshake only.",
+          "No HTTP request was sent by the TLS check.",
+          "A negotiated modern TLS version does not enumerate or prove that older protocols are disabled."
+        ],
+        "evidence_sha256": "c2db3c6cb218ec2b6690e0b1b44bdaea6ea338e9e5b34ec343add738f57fd9ad",
+        "findings": [
+          {
+            "id": "355a7f0fed5169d6675cbb71925d0eeef97816f4df24b44c7daeb31244c009f2",
+            "assessment_id": "a8bdb164-9165-44c1-8c0f-0eb204683cf6",
+            "rule_id": "tls.untrusted_certificate",
+            "title": "TLS peer certificate could not be verified by the default trust checks",
+            "target": "127.0.0.1",
+            "port": 35773,
+            "severity": "medium",
+            "status": "candidate",
+            "evidence": [
+              {
+                "observation_confirmed": true,
+                "impact_verified": false,
+                "verification_status": "untrusted",
+                "certificate_sha256": "ccfc3cb482f45690e8b8f551bc3fad95f1e651370a4b077d013cd26d7f0d6291",
+                "evidence_sha256": "c2db3c6cb218ec2b6690e0b1b44bdaea6ea338e9e5b34ec343add738f57fd9ad",
+                "source_operation": "web.tls_check",
+                "source_task_id": "4226f44a-00d7-4546-920b-5e2b0ceef97e"
+              }
+            ],
+            "recommendation": "Use a certificate chain trusted by the intended clients and keep trust configuration deliberate.",
+            "limitations": [
+              "The verified TLS handshake failed; the certificate was collected by one unverified handshake only.",
+              "No HTTP request was sent by the TLS check.",
+              "A negotiated modern TLS version does not enumerate or prove that older protocols are disabled.",
+              "The observation is public certificate state; impact was not verified."
+            ],
+            "observed_at": "2026-11-03T17:34:52.240579Z",
+            "task_ids": [
+              "4226f44a-00d7-4546-920b-5e2b0ceef97e"
+            ]
+          },
+          {
+            "id": "a918577dc551a9f912d641b504183aad1bb6b5051206236b59769131ffacf3b8",
+            "assessment_id": "a8bdb164-9165-44c1-8c0f-0eb204683cf6",
+            "rule_id": "tls.certificate_expired",
+            "title": "TLS peer certificate is expired",
+            "target": "127.0.0.1",
+            "port": 35773,
+            "severity": "medium",
+            "status": "candidate",
+            "evidence": [
+              {
+                "observation_confirmed": true,
+                "impact_verified": false,
+                "certificate_sha256": "ccfc3cb482f45690e8b8f551bc3fad95f1e651370a4b077d013cd26d7f0d6291",
+                "not_valid_after": "2026-11-02T17:34:52+00:00",
+                "evidence_sha256": "c2db3c6cb218ec2b6690e0b1b44bdaea6ea338e9e5b34ec343add738f57fd9ad",
+                "source_operation": "web.tls_check",
+                "source_task_id": "4226f44a-00d7-4546-920b-5e2b0ceef97e"
+              }
+            ],
+            "recommendation": "Renew the certificate before its validity end and deploy the renewed chain.",
+            "limitations": [
+              "The verified TLS handshake failed; the certificate was collected by one unverified handshake only.",
+              "No HTTP request was sent by the TLS check.",
+              "A negotiated modern TLS version does not enumerate or prove that older protocols are disabled.",
+              "The observation is public certificate state; impact was not verified."
+            ],
+            "observed_at": "2026-11-03T17:34:52.240579Z",
+            "task_ids": [
+              "4226f44a-00d7-4546-920b-5e2b0ceef97e"
+            ]
+          }
+        ]
+      },
+      "error": null,
+      "created_at": "2026-11-03T17:34:52.188481Z",
+      "started_at": "2026-11-03T17:34:52.196736Z",
+      "finished_at": "2026-11-03T17:34:52.242860Z"
+    }
+  ],
+  "findings": [
+    {
+      "id": "2f997d90d286d34953892f1d28f9fd0905c7ff28b7e3cfdbf088b12f7f9f4398",
+      "assessment_id": "a8bdb164-9165-44c1-8c0f-0eb204683cf6",
+      "rule_id": "web.missing_referrer_policy",
+      "title": "Referrer-Policy is absent",
+      "target": "127.0.0.1",
+      "port": 33649,
+      "severity": "info",
+      "status": "candidate",
+      "evidence": [
+        {
+          "observation_confirmed": true,
+          "impact_verified": false,
+          "header": "referrer-policy",
+          "content_type": "text/html",
+          "status_code": 200,
+          "evidence_sha256": "590d346a5c366a1d8405471126dd0f0cc9d15855807bdf45b81222e8ecabcd20",
+          "source_operation": "web.http_headers",
+          "source_task_id": "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+        }
+      ],
+      "recommendation": "Consider selecting and sending an explicit Referrer-Policy.",
+      "limitations": [
+        "Only the fixed root HEAD response was observed; no body was retained.",
+        "The observation is not proof of exploitability; impact was not verified."
+      ],
+      "observed_at": "2026-11-03T17:34:52.225727Z",
+      "task_ids": [
+        "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+      ]
+    },
+    {
+      "id": "355a7f0fed5169d6675cbb71925d0eeef97816f4df24b44c7daeb31244c009f2",
+      "assessment_id": "a8bdb164-9165-44c1-8c0f-0eb204683cf6",
+      "rule_id": "tls.untrusted_certificate",
+      "title": "TLS peer certificate could not be verified by the default trust checks",
+      "target": "127.0.0.1",
+      "port": 35773,
+      "severity": "medium",
+      "status": "candidate",
+      "evidence": [
+        {
+          "observation_confirmed": true,
+          "impact_verified": false,
+          "verification_status": "untrusted",
+          "certificate_sha256": "ccfc3cb482f45690e8b8f551bc3fad95f1e651370a4b077d013cd26d7f0d6291",
+          "evidence_sha256": "c2db3c6cb218ec2b6690e0b1b44bdaea6ea338e9e5b34ec343add738f57fd9ad",
+          "source_operation": "web.tls_check",
+          "source_task_id": "4226f44a-00d7-4546-920b-5e2b0ceef97e"
+        }
+      ],
+      "recommendation": "Use a certificate chain trusted by the intended clients and keep trust configuration deliberate.",
+      "limitations": [
+        "A negotiated modern TLS version does not enumerate or prove that older protocols are disabled.",
+        "No HTTP request was sent by the TLS check.",
+        "The observation is public certificate state; impact was not verified.",
+        "The verified TLS handshake failed; the certificate was collected by one unverified handshake only."
+      ],
+      "observed_at": "2026-11-03T17:34:52.240579Z",
+      "task_ids": [
+        "4226f44a-00d7-4546-920b-5e2b0ceef97e"
+      ]
+    },
+    {
+      "id": "8415d8c088c024979171e998ae031f27b4f6b7c9e234a0afaf5ca7a586977565",
+      "assessment_id": "a8bdb164-9165-44c1-8c0f-0eb204683cf6",
+      "rule_id": "web.missing_nosniff",
+      "title": "X-Content-Type-Options is absent",
+      "target": "127.0.0.1",
+      "port": 33649,
+      "severity": "info",
+      "status": "candidate",
+      "evidence": [
+        {
+          "observation_confirmed": true,
+          "impact_verified": false,
+          "header": "x-content-type-options",
+          "content_type": "text/html",
+          "status_code": 200,
+          "evidence_sha256": "590d346a5c366a1d8405471126dd0f0cc9d15855807bdf45b81222e8ecabcd20",
+          "source_operation": "web.http_headers",
+          "source_task_id": "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+        }
+      ],
+      "recommendation": "Consider sending X-Content-Type-Options: nosniff where appropriate.",
+      "limitations": [
+        "Only the fixed root HEAD response was observed; no body was retained.",
+        "The observation is not proof of exploitability; impact was not verified."
+      ],
+      "observed_at": "2026-11-03T17:34:52.225727Z",
+      "task_ids": [
+        "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+      ]
+    },
+    {
+      "id": "9dccb49a34b997e6bb896d1fb5745ff2429f95a664c550196f05ae468f6955e8",
+      "assessment_id": "a8bdb164-9165-44c1-8c0f-0eb204683cf6",
+      "rule_id": "web.missing_content_security_policy",
+      "title": "Content-Security-Policy is absent from an HTML response",
+      "target": "127.0.0.1",
+      "port": 33649,
+      "severity": "low",
+      "status": "candidate",
+      "evidence": [
+        {
+          "observation_confirmed": true,
+          "impact_verified": false,
+          "header": "content-security-policy",
+          "content_type": "text/html",
+          "status_code": 200,
+          "evidence_sha256": "590d346a5c366a1d8405471126dd0f0cc9d15855807bdf45b81222e8ecabcd20",
+          "source_operation": "web.http_headers",
+          "source_task_id": "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+        }
+      ],
+      "recommendation": "Consider a narrowly scoped Content-Security-Policy appropriate to the application.",
+      "limitations": [
+        "Only the fixed root HEAD response was observed; no body was retained.",
+        "The observation is not proof of exploitability; impact was not verified."
+      ],
+      "observed_at": "2026-11-03T17:34:52.225727Z",
+      "task_ids": [
+        "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+      ]
+    },
+    {
+      "id": "a918577dc551a9f912d641b504183aad1bb6b5051206236b59769131ffacf3b8",
+      "assessment_id": "a8bdb164-9165-44c1-8c0f-0eb204683cf6",
+      "rule_id": "tls.certificate_expired",
+      "title": "TLS peer certificate is expired",
+      "target": "127.0.0.1",
+      "port": 35773,
+      "severity": "medium",
+      "status": "candidate",
+      "evidence": [
+        {
+          "observation_confirmed": true,
+          "impact_verified": false,
+          "certificate_sha256": "ccfc3cb482f45690e8b8f551bc3fad95f1e651370a4b077d013cd26d7f0d6291",
+          "not_valid_after": "2026-11-02T17:34:52+00:00",
+          "evidence_sha256": "c2db3c6cb218ec2b6690e0b1b44bdaea6ea338e9e5b34ec343add738f57fd9ad",
+          "source_operation": "web.tls_check",
+          "source_task_id": "4226f44a-00d7-4546-920b-5e2b0ceef97e"
+        }
+      ],
+      "recommendation": "Renew the certificate before its validity end and deploy the renewed chain.",
+      "limitations": [
+        "A negotiated modern TLS version does not enumerate or prove that older protocols are disabled.",
+        "No HTTP request was sent by the TLS check.",
+        "The observation is public certificate state; impact was not verified.",
+        "The verified TLS handshake failed; the certificate was collected by one unverified handshake only."
+      ],
+      "observed_at": "2026-11-03T17:34:52.240579Z",
+      "task_ids": [
+        "4226f44a-00d7-4546-920b-5e2b0ceef97e"
+      ]
+    },
+    {
+      "id": "d2d19730d57ab6e0479a0d8ca298f48ebb0ed8f13c3b52309f78e7e3dfd75b94",
+      "assessment_id": "a8bdb164-9165-44c1-8c0f-0eb204683cf6",
+      "rule_id": "web.missing_frame_policy",
+      "title": "Frame-embedding policy is absent from an HTML response",
+      "target": "127.0.0.1",
+      "port": 33649,
+      "severity": "low",
+      "status": "candidate",
+      "evidence": [
+        {
+          "observation_confirmed": true,
+          "impact_verified": false,
+          "header": "x-frame-options",
+          "content_type": "text/html",
+          "status_code": 200,
+          "evidence_sha256": "590d346a5c366a1d8405471126dd0f0cc9d15855807bdf45b81222e8ecabcd20",
+          "source_operation": "web.http_headers",
+          "source_task_id": "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+        }
+      ],
+      "recommendation": "Set an appropriate X-Frame-Options policy or a CSP frame-ancestors policy.",
+      "limitations": [
+        "Only the fixed root HEAD response was observed; no body was retained.",
+        "The observation is not proof of exploitability; impact was not verified."
+      ],
+      "observed_at": "2026-11-03T17:34:52.225727Z",
+      "task_ids": [
+        "843e71b8-8bd4-4c6a-b4c2-fe9eb06e62c6"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,46 @@
+{
+  "version": "0.4.0",
+  "platform": "linux",
+  "python": "3.12.3 (main, Aug 31 2026, 10:18:26) [GCC 13.3.0]",
+  "tools": [
+    {
+      "name": "python-runtime",
+      "installed": true,
+      "integrated": true,
+      "tested": false,
+      "supported": true,
+      "details": "Yerel Python çalışma zamanı; güvenlik taraması değildir.",
+      "executable": "/home/ubuntu/secram-pro/.venv/bin/python",
+      "version": "3.12.3"
+    },
+    {
+      "name": "nmap",
+      "installed": true,
+      "integrated": true,
+      "tested": false,
+      "supported": true,
+      "details": "Fixed, unprivileged Linux Nmap TCP connect scan adapter.",
+      "executable": "/usr/bin/nmap",
+      "version": "Nmap version 7.94SVN ( https://nmap.org )"
+    }
+  ],
+  "lab_commands": {
+    "unshare": "/usr/bin/unshare",
+    "ip": "/usr/sbin/ip"
+  },
+  "rootless_namespace_verified": false,
+  "advisory_data": {
+    "status": "data_unavailable",
+    "available": false,
+    "data_available": false,
+    "record_count": 0,
+    "importsha": null,
+    "importtime": null,
+    "vulnerabilities": [],
+    "limitations": [
+      "Offline OSV advisory data is unavailable: cannot read /tmp/tmp.AV7Vsf8k83/advisories/osv.json: No such file or directory"
+    ]
+  },
+  "data_dir": "/tmp/tmp.AV7Vsf8k83",
+  "security_assessment": false
+}

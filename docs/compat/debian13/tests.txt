@@ -1,0 +1,9 @@
+........................................................................ [ 40%]
+.....s...........................................................s.ss... [ 80%]
+....................................                                     [100%]
+=========================== short test summary info ============================
+SKIPPED [1] tests/test_lab.py:49: rootless unshare integration unavailable: worker exited with status 1: unshare: unshare failed: Operation not permitted
+SKIPPED [1] tests/test_release_hardening.py:77: Rootless lab unavailable: worker exited with status 1: unshare: unshare failed: Operation not permitted
+SKIPPED [1] tests/test_release_integration.py:28: Rootless lab unavailable: worker exited with status 1: unshare: unshare failed: Operation not permitted
+SKIPPED [1] tests/test_release_integration.py:56: Rootless lab unavailable: worker exited with status 1: unshare: unshare failed: Operation not permitted
+176 passed, 4 skipped in 20.79s

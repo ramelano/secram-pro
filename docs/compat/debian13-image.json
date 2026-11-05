@@ -1,0 +1,23 @@
+{
+    "Digest": "sha256:e2914ec98e08b24b4cee3cefcb9f90dfb5519f8d215a2ccf0c9a49b10b6e43de",
+    "RepoTags": [],
+    "Created": "2026-10-27T00:00:00Z",
+    "DockerVersion": "",
+    "Labels": null,
+    "Architecture": "amd64",
+    "Os": "linux",
+    "Layers": [
+        "sha256:a1d156b0aab5fb07d822a7f4681f6d3ed1689073531c34f5668818c233633f11"
+    ],
+    "LayersData": [
+        {
+            "MIMEType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "Digest": "sha256:a1d156b0aab5fb07d822a7f4681f6d3ed1689073531c34f5668818c233633f11",
+            "Size": 49407895,
+            "Annotations": null
+        }
+    ],
+    "Env": [
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+    ]
+}

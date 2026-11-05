@@ -1,0 +1,17 @@
+
+==================================== ERRORS ====================================
+______________________ ERROR collecting tests/test_ui.py _______________________
+ImportError while importing test module '/opt/project/tests/test_ui.py'.
+Hint: make sure your test modules/packages have valid Python names.
+Traceback:
+/usr/lib/python3.13/importlib/__init__.py:88: in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+tests/test_ui.py:17: in <module>
+    from PySide6.QtWidgets import QApplication  # noqa: E402
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E   ImportError: libglib-2.0.so.0: cannot open shared object file: No such file or directory
+=========================== short test summary info ============================
+ERROR tests/test_ui.py
+!!!!!!!!!!!!!!!!!!!! Interrupted: 1 error during collection !!!!!!!!!!!!!!!!!!!!
+1 error in 1.35s

@@ -1,0 +1,67 @@
+..........................................................F............. [ 40%]
+.................................................................E...... [ 80%]
+....................................                                     [100%]
+==================================== ERRORS ====================================
+__________ ERROR at setup of test_actual_gui_lab_autonomous_controls ___________
+file /home/ubuntu/secram-pro/tests/test_release_hardening.py, line 68
+  def test_actual_gui_lab_autonomous_controls(qt_app,tmp_path):
+E       fixture 'qt_app' not found
+>       available fixtures: cache, capfd, capfdbinary, caplog, capsys, capsysbinary, capteesys, cleanup_qt_widgets, doctest_namespace, monkeypatch, pytestconfig, record_property, record_testsuite_property, record_xml_attribute, recwarn, stable_qt_application, subtests, tmp_path, tmp_path_factory, tmpdir, tmpdir_factory
+>       use 'pytest --fixtures [testpath]' for help on them.
+
+/home/ubuntu/secram-pro/tests/test_release_hardening.py:68
+=================================== FAILURES ===================================
+_______________________ test_scope_rechecked_after_wait ________________________
+
+repo = <secram.storage.repository.Repository object at 0x7f73acfe7a10>
+
+    def test_scope_rechecked_after_wait(repo):
+        async def scenario():
+            a = assessment(expires_at=utcnow() + timedelta(seconds=0.25)); repo.save_assessment(a)
+            calls = []
+            async def handler(task):
+                calls.append(task.id); await asyncio.sleep(0.4); return {}
+            engine = TaskEngine(repo, concurrency=1); engine.register(Operation("test.check", handler))
+            first = await engine.submit(new_task(a)); second = await engine.submit(new_task(a))
+            await engine.wait_idle()
+            assert calls == [first.id]
+            assert repo.get_task(second.id).state == TaskState.FAILED
+            assert "Authorization" in repo.get_task(second.id).error
+            await engine.close()
+>       asyncio.run(scenario())
+
+tests/test_core.py:245: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/usr/lib/python3.12/asyncio/runners.py:194: in run
+    return runner.run(main)
+           ^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/asyncio/runners.py:118: in run
+    return self._loop.run_until_complete(task)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/usr/lib/python3.12/asyncio/base_events.py:687: in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    async def scenario():
+        a = assessment(expires_at=utcnow() + timedelta(seconds=0.25)); repo.save_assessment(a)
+        calls = []
+        async def handler(task):
+            calls.append(task.id); await asyncio.sleep(0.4); return {}
+        engine = TaskEngine(repo, concurrency=1); engine.register(Operation("test.check", handler))
+        first = await engine.submit(new_task(a)); second = await engine.submit(new_task(a))
+        await engine.wait_idle()
+        assert calls == [first.id]
+        assert repo.get_task(second.id).state == TaskState.FAILED
+>       assert "Authorization" in repo.get_task(second.id).error
+E       AssertionError: assert 'Authorization' in 'TimeoutError: '
+E        +  where 'TimeoutError: ' = Task(id='bf78b84b-bcdb-41e1-9944-7f61883a10eb', assessment_id='1d5017d1-9912-4a3c-8181-fbbfcb1369ae', name='test', ope..., tzinfo=TzInfo(0)), started_at=None, finished_at=datetime.datetime(2026, 11, 3, 18, 46, 36, 729395, tzinfo=TzInfo(0))).error
+E        +    where Task(id='bf78b84b-bcdb-41e1-9944-7f61883a10eb', assessment_id='1d5017d1-9912-4a3c-8181-fbbfcb1369ae', name='test', ope..., tzinfo=TzInfo(0)), started_at=None, finished_at=datetime.datetime(2026, 11, 3, 18, 46, 36, 729395, tzinfo=TzInfo(0))) = get_task('bf78b84b-bcdb-41e1-9944-7f61883a10eb')
+E        +      where get_task = <secram.storage.repository.Repository object at 0x7f73acfe7a10>.get_task
+E        +      and   'bf78b84b-bcdb-41e1-9944-7f61883a10eb' = Task(id='bf78b84b-bcdb-41e1-9944-7f61883a10eb', assessment_id='1d5017d1-9912-4a3c-8181-fbbfcb1369ae', name='test', ope...at=datetime.datetime(2026, 11, 3, 18, 46, 36, 484282, tzinfo=datetime.timezone.utc), started_at=None, finished_at=None).id
+
+tests/test_core.py:243: AssertionError
+=========================== short test summary info ============================
+ERROR tests/test_release_hardening.py::test_actual_gui_lab_autonomous_controls
+FAILED tests/test_core.py::test_scope_rechecked_after_wait - AssertionError: ...
+1 failed, 178 passed, 1 error in 19.02s

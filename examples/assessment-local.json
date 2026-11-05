@@ -1,0 +1,11 @@
+{
+  "title": "Kendi loopback HTTP servisim",
+  "cidrs": ["127.0.0.1/32"],
+  "approved_by": "KENDI_YETKILI_KISI_BILGINIZI_YAZIN",
+  "evidence_reference": "YALNIZ_KENDI_YEREL_SERVISIM",
+  "expires_hours": 1,
+  "allowed_operations": ["orchestrator.run", "nmap.tcp_scan", "web.http_headers", "blue.monitor"],
+  "ports": [8000],
+  "target": "127.0.0.1",
+  "web_services": {"8000": "http"}
+}

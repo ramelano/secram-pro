@@ -1,0 +1,24 @@
+usage: __main__.py [-h] [--data-dir DATA_DIR] [--smoke-test]
+                   [--self-check | --host-snapshot | --doctor | --lab-demo | --run-assessment RUN_ASSESSMENT | --import-osv IMPORT_OSV | --list-assessments | --export ASSESSMENT_ID]
+                   [--output-dir OUTPUT_DIR]
+
+SecRam-Pro v0.4.0 — çevrimdışı, kapsam kontrollü Linux değerlendirme
+
+options:
+  -h, --help            show this help message and exit
+  --data-dir DATA_DIR   Ayrı kullanıcı veri dizini
+  --smoke-test          Qt arayüzünü açıp kısa süre sonra kapatır
+  --self-check          Yerel çekirdek kontrolü; tarama yok
+  --host-snapshot       Gerçek salt okunur yerel Host verisi
+  --doctor              Yerel bağımlılık/durum bilgisi; tarama yok
+  --lab-demo            Yalnız kendi geçici rootless HTTP Lab'ında gerçek
+                        otonom test
+  --run-assessment RUN_ASSESSMENT
+                        Açık yetki/kapsam içeren yerel JSON profil
+  --import-osv IMPORT_OSV
+                        Yerel OSV JSON verisini içe aktar
+  --list-assessments    Kayıtlı değerlendirmeleri JSON listeler
+  --export ASSESSMENT_ID
+                        Değerlendirmeyi beş formatta dışa aktar
+  --output-dir OUTPUT_DIR
+                        --export için yerel rapor dizini

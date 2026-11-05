@@ -1,0 +1,57 @@
+{
+  "shared_kernel": "6.18.38+",
+  "execution": "official OCI rootfs in mount/PID/network namespaces; offline loopback tests",
+  "native_kernel_selinux_systemd_desktop_verified": false,
+  "results": [
+    {
+      "label": "fedora43",
+      "os": "Fedora Linux 43 (Container Image)",
+      "python": "Python 3.14.8",
+      "nmap": "Nmap version 7.92 ( https://nmap.org )",
+      "image_digest": "sha256:3a515a26e06ffe17847b46f2f71a45140180ba2e39206d9c83fde648f0767cad",
+      "tests": {
+        "tests": 180,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 4
+      },
+      "test_exit": 0,
+      "gui_exit": 0,
+      "skipped_tests": [
+        "test_rootless_fixture_http_and_telemetry",
+        "test_actual_gui_lab_autonomous_controls",
+        "test_actual_autonomous_lab_and_all_reports",
+        "test_controller_works_with_single_execution_slot"
+      ],
+      "limitations": [
+        "Rootless Lab integration unverified in this chroot/namespace environment: unshare Operation not permitted"
+      ],
+      "status": "passed_userspace_limited"
+    },
+    {
+      "label": "debian13",
+      "os": "Debian GNU/Linux 13 (trixie)",
+      "python": "Python 3.13.5",
+      "nmap": "Nmap version 7.95 ( https://nmap.org )",
+      "image_digest": "sha256:e2914ec98e08b24b4cee3cefcb9f90dfb5519f8d215a2ccf0c9a49b10b6e43de",
+      "tests": {
+        "tests": 180,
+        "failures": 0,
+        "errors": 0,
+        "skipped": 4
+      },
+      "test_exit": 0,
+      "gui_exit": 0,
+      "skipped_tests": [
+        "test_rootless_fixture_http_and_telemetry",
+        "test_actual_gui_lab_autonomous_controls",
+        "test_actual_autonomous_lab_and_all_reports",
+        "test_controller_works_with_single_execution_slot"
+      ],
+      "limitations": [
+        "Rootless Lab integration unverified in this chroot/namespace environment: unshare Operation not permitted"
+      ],
+      "status": "passed_userspace_limited"
+    }
+  ]
+}

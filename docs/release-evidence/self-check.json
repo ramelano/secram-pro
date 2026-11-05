@@ -1,0 +1,33 @@
+{
+  "id": "45290371-32bd-49fc-8846-23abae79c596",
+  "assessment_id": "28a3541e-d47d-441e-ac28-663f7be1cd91",
+  "name": "core.self_check",
+  "operation": "core.self_check",
+  "target": null,
+  "port": null,
+  "params": {},
+  "dependencies": [],
+  "state": "succeeded",
+  "result": {
+    "check": "core.self_check",
+    "security_assessment": false,
+    "platform": "linux",
+    "runtime": {
+      "tool": "python-runtime",
+      "returncode": 0,
+      "stdout": "Python 3.12.3",
+      "stderr": "",
+      "version": "Python 3.12.3",
+      "executable": "/home/ubuntu/secram-pro/.venv/bin/python"
+    },
+    "database_counts": {
+      "assessments": 1,
+      "tasks": 1,
+      "audit": 6
+    }
+  },
+  "error": null,
+  "created_at": "2026-11-03T18:50:12.439556Z",
+  "started_at": "2026-11-03T18:50:12.446660Z",
+  "finished_at": "2026-11-03T18:50:12.452676Z"
+}

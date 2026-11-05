@@ -1,0 +1,20 @@
+Obtaining file:///opt/project
+  Checking if build backend supports build_editable: started
+  Checking if build backend supports build_editable: finished with status 'done'
+  Preparing editable metadata (pyproject.toml): started
+  Preparing editable metadata (pyproject.toml): finished with status 'done'
+Building wheels for collected packages: secram-pro
+  Building editable for secram-pro (pyproject.toml): started
+  Building editable for secram-pro (pyproject.toml): finished with status 'done'
+  Created wheel for secram-pro: filename=secram_pro-0.4.0-0.editable-py3-none-any.whl size=7386 sha256=ab50eb9aef655ff55d403363fdd46622169ad72cbc3fb4c1e0882810ac626618
+  Stored in directory: /tmp/pip-ephem-wheel-cache-rvkjsf8n/wheels/31/af/f0/92039c8eb878071e97e7b6bd52fd402c56ba44919744fa21c7
+Successfully built secram-pro
+Installing collected packages: secram-pro
+  Attempting uninstall: secram-pro
+    Found existing installation: secram-pro 0.3.0
+    Uninstalling secram-pro-0.3.0:
+      Successfully uninstalled secram-pro-0.3.0
+Successfully installed secram-pro-0.4.0
+
+[notice] A new release of pip is available: 25.1.1 -> 26.3
+[notice] To update, run: /opt/secram-venv/bin/python -m pip install --upgrade pip

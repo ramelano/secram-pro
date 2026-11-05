@@ -1,0 +1,28 @@
+{
+    "Digest": "sha256:3a515a26e06ffe17847b46f2f71a45140180ba2e39206d9c83fde648f0767cad",
+    "RepoTags": [],
+    "Created": "2026-11-02T20:43:13.524855093Z",
+    "DockerVersion": "",
+    "Labels": {
+        "maintainer": "Clement Verna \u003ccverna@fedoraproject.org\u003e"
+    },
+    "Architecture": "amd64",
+    "Os": "linux",
+    "Layers": [
+        "sha256:0b29077730bf5134be742300ba4bda52ae71f657ecbb4ee5674800f82e22ae1a"
+    ],
+    "LayersData": [
+        {
+            "MIMEType": "application/vnd.oci.image.layer.v1.tar+gzip",
+            "Digest": "sha256:0b29077730bf5134be742300ba4bda52ae71f657ecbb4ee5674800f82e22ae1a",
+            "Size": 67674472,
+            "Annotations": null
+        }
+    ],
+    "Env": [
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+        "DISTTAG=f43container",
+        "FGC=f43",
+        "FBR=f43"
+    ]
+}

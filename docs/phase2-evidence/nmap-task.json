@@ -1,0 +1,73 @@
+{
+  "id": "a53cd5a2-5770-41b3-a010-016c374e02dc",
+  "assessment_id": "c2ffbb9c-9a19-4f90-8374-e14fba4da180",
+  "name": "Yerel TCP testi",
+  "operation": "nmap.tcp_scan",
+  "target": "127.0.0.1",
+  "port": null,
+  "params": {
+    "ports": [
+      50555
+    ]
+  },
+  "dependencies": [],
+  "state": "succeeded",
+  "result": {
+    "tool": "nmap",
+    "returncode": 0,
+    "stdout": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<!DOCTYPE nmaprun>\n<?xml-stylesheet href=\"file:///usr/bin/../share/nmap/nmap.xsl\" type=\"text/xsl\"?>\n<!-- Nmap 7.94SVN scan initiated Tue Nov  3 17:16:24 2026 as: /usr/bin/nmap -&#45;unprivileged -sT -Pn -n -&#45;disable-arp-ping -T2 -&#45;max-rate 25 -&#45;max-retries 1 -&#45;host-timeout 25s -p 50555 -oX - 127.0.0.1 -->\n<nmaprun scanner=\"nmap\" args=\"/usr/bin/nmap -&#45;unprivileged -sT -Pn -n -&#45;disable-arp-ping -T2 -&#45;max-rate 25 -&#45;max-retries 1 -&#45;host-timeout 25s -p 50555 -oX - 127.0.0.1\" start=\"1793726184\" startstr=\"Tue Nov  3 17:16:24 2026\" version=\"7.94SVN\" xmloutputversion=\"1.05\">\n<scaninfo type=\"connect\" protocol=\"tcp\" numservices=\"1\" services=\"50555\"/>\n<verbose level=\"0\"/>\n<debugging level=\"0\"/>\n<host starttime=\"1793726184\" endtime=\"1793726184\"><status state=\"up\" reason=\"user-set\" reason_ttl=\"0\"/>\n<address addr=\"127.0.0.1\" addrtype=\"ipv4\"/>\n<hostnames>\n</hostnames>\n<ports><port protocol=\"tcp\" portid=\"50555\"><state state=\"open\" reason=\"syn-ack\" reason_ttl=\"0\"/></port>\n</ports>\n<times srtt=\"117\" rttvar=\"5000\" to=\"400000\"/>\n</host>\n<runstats><finished time=\"1793726184\" timestr=\"Tue Nov  3 17:16:24 2026\" summary=\"Nmap done at Tue Nov  3 17:16:24 2026; 1 IP address (1 host up) scanned in 0.43 seconds\" elapsed=\"0.43\" exit=\"success\"/><hosts up=\"1\" down=\"0\" total=\"1\"/>\n</runstats>\n</nmaprun>\n",
+    "stderr": "",
+    "operation": "tcp_scan",
+    "target": "127.0.0.1",
+    "requested_ports": [
+      50555
+    ],
+    "hosts": [
+      {
+        "ip": "127.0.0.1",
+        "state": "up",
+        "ports": [
+          {
+            "port": 50555,
+            "protocol": "tcp",
+            "state": "open",
+            "reason": "syn-ack",
+            "service": {
+              "name": null,
+              "method": null,
+              "confidence": null
+            },
+            "service_verified": false
+          }
+        ]
+      }
+    ],
+    "scan_status": "complete",
+    "tool_version": "7.94SVN",
+    "raw_xml_sha256": "1da93dfbcdc1b8f5f11eeaf52ab105ef4c79a3229277330386c1ddbd08d1ab66",
+    "command": [
+      "/usr/bin/nmap",
+      "--unprivileged",
+      "-sT",
+      "-Pn",
+      "-n",
+      "--disable-arp-ping",
+      "-T2",
+      "--max-rate",
+      "25",
+      "--max-retries",
+      "1",
+      "--host-timeout",
+      "25s",
+      "-p",
+      "50555",
+      "-oX",
+      "-",
+      "127.0.0.1"
+    ]
+  },
+  "error": null,
+  "created_at": "2026-11-03T17:16:24.297139Z",
+  "started_at": "2026-11-03T17:16:24.304071Z",
+  "finished_at": "2026-11-03T17:16:24.754099Z"
+}

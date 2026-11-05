@@ -1,0 +1,77 @@
+{
+  "validation": "real local-only Phase 2",
+  "target": "127.0.0.1",
+  "authorized_port": 50555,
+  "host": {
+    "task_state": "succeeded",
+    "snapshot_status": "ok",
+    "collected_at": "2026-11-03T17:16:24.296870+00:00",
+    "cpu": {
+      "logical_count": 6,
+      "percent": 8.3,
+      "load_avg": [
+        0.13623046875,
+        0.0810546875,
+        0.013671875
+      ]
+    },
+    "memory": {
+      "total": 12585308160,
+      "available": 10793967616,
+      "used": 1791340544,
+      "percent": 14.2
+    },
+    "storage": {
+      "total": 51865899008,
+      "used": 11034292224,
+      "free": 40814829568,
+      "percent": 21.3
+    },
+    "process_count": 151,
+    "interface_address_count": 6,
+    "services_status": "ok",
+    "limitations": [],
+    "measurement_context": "OS-visible resources; cgroup limits are not applied. A container snapshot may not represent physical-host resources."
+  },
+  "nmap": {
+    "task_state": "succeeded",
+    "tool_version": "7.94SVN",
+    "scan_status": "complete",
+    "observed_ports": [
+      {
+        "port": 50555,
+        "protocol": "tcp",
+        "state": "open",
+        "reason": "syn-ack",
+        "service": {
+          "name": null,
+          "method": null,
+          "confidence": null
+        },
+        "service_verified": false
+      }
+    ],
+    "raw_xml_sha256": "1da93dfbcdc1b8f5f11eeaf52ab105ef4c79a3229277330386c1ddbd08d1ab66",
+    "command": [
+      "/usr/bin/nmap",
+      "--unprivileged",
+      "-sT",
+      "-Pn",
+      "-n",
+      "--disable-arp-ping",
+      "-T2",
+      "--max-rate",
+      "25",
+      "--max-retries",
+      "1",
+      "--host-timeout",
+      "25s",
+      "-p",
+      "50555",
+      "-oX",
+      "-",
+      "127.0.0.1"
+    ]
+  },
+  "audit_records": 11
+}
