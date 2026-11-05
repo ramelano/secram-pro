@@ -2,7 +2,7 @@
 
 v0.4.0 geliştirme sürümüdür; üretim güvenlik ürünü, compliance sertifikası veya exploit-safe sandbox değildir.
 
-Yalnız sahip olduğunuz/yetkilendirilmiş hedeflerde kullanın. Yetki beyanı bağımsız yetki doğrulaması değildir. Bu sürüm serbest komut, exploit, credential theft, persistence, evasion veya destructive response yüzeyi sunmaz.
+Yalnız sahip olduğunuz/yetkilendirilmiş hedeflerde kullanın. `approved_by` ve `evidence_reference` alanları serbest metin olarak denetim izi sağlar; **yetkiyi doğrulamaz**. Kullanıcı yetki beyanı bağımsız yetki doğrulaması değildir. Buna karşılık uygulama her görevde değerlendirme kimliği, işlem, literal hedef, port ve yetki süresini yeniden denetler; kapsam dışı veya süresi bitmiş görevleri çalıştırmamalıdır. Bu sürüm serbest komut, exploit, credential theft, persistence, evasion veya destructive response yüzeyi sunmaz.
 
 SQLite/raporlar şifreli değildir. Kaynak repository’ye gerçek müşteri/hedef IP’leri, auth kayıtları, DB, rapor, PCAP, sertifika özel anahtarı veya token koymayın. Redaksiyon her olası sırrı tanımaz. Rapor manifesti dijital imza değildir.
 

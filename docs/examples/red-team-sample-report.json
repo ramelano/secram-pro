@@ -1,0 +1,24 @@
+{
+  "sample": true,
+  "notice": "Bu dosya yalnızca vitrin örneğidir; gerçek hedef veya canlı ölçüm değildir.",
+  "profile": "red_team_v0.1_scoped",
+  "status": "complete",
+  "red": {
+    "version": "0.1",
+    "target": "127.0.0.1",
+    "technique": "T1046 Network Service Scanning",
+    "requested_ports": [8000],
+    "open_ports": [8000],
+    "follow_up_operations": ["web.http_headers"],
+    "limitations": [
+      "TCP connect discovery only",
+      "No exploitation, credential attack, persistence or evasion"
+    ]
+  },
+  "findings": {
+    "count": 1,
+    "status": "candidate",
+    "note": "Açık port veya gözlem tek başına zafiyet kanıtı değildir."
+  },
+  "report_formats": ["json", "md", "html", "csv", "pdf"]
+}

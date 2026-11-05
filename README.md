@@ -36,9 +36,17 @@ Komut satırından aynı akış:
 
 Sonuçta `profile` alanı `red_team_v0.1_scoped`, `red.technique` alanı ise `T1046 Network Service Scanning` olur.
 
+Gerçek hedef verisi içermeyen örnek sonuç: [`docs/examples/red-team-sample-report.json`](docs/examples/red-team-sample-report.json).
+
 Bu sürüm **istismar, parola saldırısı, credential theft, kalıcılık, gizlenme/evasion, phishing, malware veya sınırsız komut çalıştırma yapmaz**. Bilinmeyen servis portlarına kör HTTP/TLS isteği göndermez. Red sonuçları gözlem ve aday bulgudur; açık port tek başına zafiyet kanıtı değildir.
 
 > **Önemli:** Bu program yalnızca size ait veya yazılı izin aldığınız sistemlerde kullanılmalıdır. Program Windows için değildir; bu sürüm Linux içindir.
+
+## Yetki kaydı ne anlama gelir?
+
+Değerlendirmedeki `approved_by` ve `evidence_reference` alanları, izin bilgisini ve dayanağını işlem kaydına ekler. **Bu alanlar serbest metindir; SecRam-Pro yetkiyi bağımsız olarak doğrulayamaz. Denetim izi sağlar, yetkiyi doğrulamaz.**
+
+Buna rağmen araç kapsam kapısını atlamaz: her görevde işlem adı, literal IP/CIDR, port, başlangıç/bitiş zamanı ve değerlendirme kimliği yeniden kontrol edilir. Süresi bitmiş, kapsam dışı veya izin verilmeyen işlem/port görevi reddedilir.
 
 ## En kolay kullanım: AppImage
 

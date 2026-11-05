@@ -10,15 +10,15 @@ from secram.core.tasks import Operation, TaskEngine
 from secram.storage.repository import Repository
 
 
-def assessment(**scope_overrides):
+def assessment(authorization=None, **scope_overrides):
     data = dict(cidrs=["192.0.2.0/24", "2001:db8::/32"],
                 allowed_operations={"test.check"}, allowed_ports={443},
                 expires_at=utcnow() + timedelta(hours=1))
     data.update(scope_overrides)
     return Assessment(title="Yetkili test kapsamı", scope=Scope(**data),
-                      authorization=Authorization(approved_by="Test sahibi",
-                                                  evidence_reference="Yerel test fixture",
-                                                  statement="Yalnızca yazılım birim testi"))
+                      authorization=authorization or Authorization(approved_by="Test sahibi",
+                                                                    evidence_reference="Yerel test fixture",
+                                                                    statement="Yalnızca yazılım birim testi"))
 
 
 @pytest.fixture
@@ -53,6 +53,31 @@ def test_expired_authorization():
     with pytest.raises(PolicyDenied):
         PolicyEngine().check(a, Task(assessment_id=a.id, name="test", operation="test.check",
                                     target="192.0.2.1"), target_required=True)
+
+
+def test_free_text_authorization_does_not_bypass_scope_or_time():
+    a = assessment(
+        authorization=Authorization(
+            approved_by="ROOT / full permission",
+            evidence_reference="I can do anything",
+            statement="This text is not independently verified",
+        ),
+        allowed_ports={443},
+        expires_at=utcnow() + timedelta(hours=1),
+    )
+    with pytest.raises(PolicyDenied):
+        PolicyEngine().check(a, Task(assessment_id=a.id, name="test", operation="test.check",
+                                     target="192.0.2.1", port=22), target_required=True)
+
+    expired = assessment(
+        authorization=a.authorization,
+        starts_at=utcnow() - timedelta(hours=2),
+        expires_at=utcnow() - timedelta(hours=1),
+    )
+    with pytest.raises(PolicyDenied):
+        PolicyEngine().check(expired, Task(assessment_id=expired.id, name="test",
+                                           operation="test.check", target="192.0.2.1"),
+                             target_required=True)
 
 
 def test_operation_denied():
