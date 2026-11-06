@@ -2,6 +2,18 @@
 
 Aşağıdaki örneklerde AppImage adı kullanılmıştır. Kaynak kurulumunda aynı yere `secram-pro`, tarball’da `./AppRun` yazabilirsiniz.
 
+AppImage, Linux’ta kurulum gerektirmeyen tek dosyalık program paketidir; Windows’taki `.exe` dosyasına benzer. Yalnız Linux x86_64 üzerinde çalışır.
+
+## Yerel IP ve gateway bilgisini gösterme
+
+Bu komut yalnızca bilgisayarın yerel ağ bilgilerini okur; tarama yapmaz:
+
+```bash
+./SecRam-Pro-v0.4.0-x86_64.AppImage --show-network
+```
+
+GUI’de **IP ve ağ bilgisini otomatik doldur** düğmesi aynı bilgiyi forma yazar. Kullanıcı tarama düğmesine basmadıkça Nmap çalışmaz.
+
 ## İlk kontroller
 
 ```bash

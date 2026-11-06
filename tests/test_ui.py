@@ -126,6 +126,13 @@ class FakeService:
             "audit": len(self.audit),
         }
 
+    def discover_network(self) -> dict:
+        return {
+            "status": "ok",
+            "interfaces": [{"interface": "eth0", "address": "192.168.1.25", "cidr": "192.168.1.0/24", "gateway": "192.168.1.1"}],
+            "default": {"interface": "eth0", "address": "192.168.1.25", "cidr": "192.168.1.0/24", "gateway": "192.168.1.1"},
+        }
+
 
 @pytest.fixture(scope="session")
 def qt_app() -> QApplication:

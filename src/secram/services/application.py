@@ -17,6 +17,7 @@ from secram.tools.registry import ToolRegistry
 from secram.tools.adapters.python_runtime import PythonRuntimeAdapter
 from secram.tools.adapters.nmap import NmapAdapter
 from secram.platforms.linux.host import LinuxHostProvider
+from secram.platforms.linux.network import discover_local_network
 from secram.modules.vulnerability.checks import WebChecks
 from secram.modules.vulnerability.findings import Finding, normalize_findings, merge_findings
 from secram.services.operations import Operations
@@ -210,6 +211,10 @@ class ApplicationService:
 
     def list_tasks(self) -> list[Task]:
         return self.repository.list_tasks()
+
+    def discover_network(self) -> dict:
+        """Read local interface/CIDR/gateway information without scanning."""
+        return discover_local_network()
 
     def save_task_result(self, task_id: str, output_path: Path | None = None) -> Path:
         """Save one completed task as a private, easy-to-find JSON artifact."""

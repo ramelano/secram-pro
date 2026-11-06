@@ -30,6 +30,8 @@ Doğrudan dosyalar:
 - [Portable tarball](https://github.com/ramelano/secram-pro/releases/latest/download/SecRam-Pro-v0.4.0-portable-x86_64.tar.gz)
 - [SHA256SUMS](https://github.com/ramelano/secram-pro/releases/latest/download/SHA256SUMS)
 
+**AppImage nedir?** Linux’ta kurulum gerektirmeyen tek dosyalık program paketidir. Dosyayı indirip çalıştırma izni vermeniz yeterlidir. Windows `.exe` dosyasına benzer; ancak yalnız Linux x86_64 içindir.
+
 ### 2. Doğrula ve çalıştır
 
 ```bash
@@ -59,11 +61,12 @@ APPIMAGE_EXTRACT_AND_RUN=1 ./SecRam-Pro-v0.4.0-x86_64.AppImage
 
 Başlangıç kullanıcıları için program açıldığında **Hızlı Tarama** sekmesini kullanın:
 
-1. `Hedef IP` alanına tek bir literal IP yazın; örneğin `192.168.1.1`.
-2. `TCP portları` alanına `22,80,443` gibi izinli portları yazın.
-3. Yetki beyanını işaretleyin.
-4. **Taramayı Başlat** düğmesine basın.
-5. Açık/kapalı port sonucu aynı ekranda görünür. Sonuç ayrıca `~/.local/share/secram-pro/reports/scan-<görev-id>.json` dosyasına yazılır.
+1. **IP ve ağ bilgisini otomatik doldur** düğmesine basın. Program yerel IP, ağ ve gateway bilgisini okur; tarama yapmaz.
+2. Gerekirse `Hedef IP` alanındaki gateway’i kendi yetkili hedefinle değiştirin.
+3. `TCP portları` alanına `22,80,443` gibi izinli portları yazın.
+4. Yetki beyanını işaretleyin.
+5. **Taramayı Başlat** düğmesine basın.
+6. Açık/kapalı port sonucu aynı ekranda görünür. Sonuç ayrıca `~/.local/share/secram-pro/reports/scan-<görev-id>.json` dosyasına yazılır.
 
 Bu ekran toplu CIDR taraması yapmaz; güvenli ve anlaşılır kullanım için bir seferde tek IP tarar.
 
@@ -103,6 +106,12 @@ secram-pro \
 ```
 
 Komut sonucu terminalde JSON olarak gösterilir ve `--scan-output` ile belirtilen dosyaya da yazılır. `--authorized` zorunludur; hostname, CIDR aralığı ve serbest Nmap argümanı kabul edilmez.
+
+Yerel ağ bilgisini tarama yapmadan görmek için:
+
+```bash
+./SecRam-Pro-v0.4.0-x86_64.AppImage --show-network
+```
 
 Bu sürümde parola saldırısı, credential theft, phishing, malware/C2, kalıcılık, gizlenme/evasion, exploit veya sınırsız shell yoktur. Açık port tek başına zafiyet kanıtı değildir; bulgular gözlem ve aday bulgu niteliğindedir.
 

@@ -226,6 +226,13 @@ class MainWindow(QMainWindow):
         form.addRow("Hedef IP", self.quick_target_input)
         form.addRow("TCP portları", self.quick_ports_input)
         layout.addLayout(form)
+        self.quick_network_label = QLabel("Yerel ağ bilgisi okunuyor…")
+        self.quick_network_label.setWordWrap(True)
+        self.quick_network_label.setStyleSheet("color: #536170;")
+        layout.addWidget(self.quick_network_label)
+        self.quick_refresh_network_button = QPushButton("IP ve ağ bilgisini otomatik doldur")
+        self.quick_refresh_network_button.clicked.connect(self._discover_quick_network)
+        layout.addWidget(self.quick_refresh_network_button)
         self.quick_authorization_checkbox = QCheckBox(
             "Bu hedef için açık yetkim olduğunu beyan ediyorum"
         )
@@ -244,7 +251,36 @@ class MainWindow(QMainWindow):
         self.quick_result_view.setReadOnly(True)
         self.quick_result_view.setPlaceholderText("Tarama sonucu burada görünecek.")
         layout.addWidget(self.quick_result_view, 1)
+        QTimer.singleShot(0, self._discover_quick_network)
         return tab
+
+    def _discover_quick_network(self) -> None:
+        try:
+            info = self.service.discover_network()
+            default = info.get("default") or {}
+            interfaces = info.get("interfaces") or []
+            if default:
+                self.quick_target_input.setText(str(default.get("gateway") or default.get("address", "")))
+                self.quick_network_label.setText(
+                    f"Bulunan ağ: {default.get('interface')} · IP: {default.get('address')} · "
+                    f"Ağ: {default.get('cidr')} · Gateway: {default.get('gateway')}\n"
+                    "Bu bilgiler yalnızca forma dolduruldu; tarama başlamadı."
+                )
+            elif interfaces:
+                first = interfaces[0]
+                self.quick_target_input.setText(str(first.get("address", "")))
+                self.quick_network_label.setText(
+                    f"Bulunan arayüz: {first.get('interface')} · IP: {first.get('address')} · "
+                    f"Ağ: {first.get('cidr')} · Gateway bulunamadı.\n"
+                    "Bu bilgiler yalnızca forma dolduruldu; tarama başlamadı."
+                )
+            else:
+                self.quick_network_label.setText(
+                    f"Yerel ağ bilgisi bulunamadı: {info.get('error') or 'bilinmeyen neden'}. "
+                    "IP’yi elle girebilirsiniz."
+                )
+        except Exception as exc:
+            self.quick_network_label.setText(f"Ağ bilgisi okunamadı: {exc}. IP’yi elle girebilirsiniz.")
 
     def _build_assessments_tab(self) -> QWidget:
         tab = QWidget()

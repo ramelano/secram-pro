@@ -91,6 +91,7 @@ def main() -> int:
     checks.add_argument("--lab-demo",action="store_true",help="Yalnız kendi geçici rootless HTTP Lab'ında gerçek otonom test")
     checks.add_argument("--run-assessment",type=Path,help="Açık yetki/kapsam içeren yerel JSON profil")
     checks.add_argument("--scan-target",help="Tek literal IP için hızlı TCP taraması")
+    checks.add_argument("--show-network",action="store_true",help="Yerel IP/CIDR/gateway bilgisini gösterir; tarama yapmaz")
     checks.add_argument("--import-osv",type=Path,help="Yerel OSV JSON verisini içe aktar")
     checks.add_argument("--list-assessments",action="store_true",help="Kayıtlı değerlendirmeleri JSON listeler")
     checks.add_argument("--export",metavar="ASSESSMENT_ID",help="Değerlendirmeyi beş formatta dışa aktar")
@@ -108,6 +109,9 @@ def main() -> int:
                     "lab_commands":{"unshare":shutil.which("unshare"),"ip":shutil.which("ip")},
                     "rootless_namespace_verified":False,"advisory_data":service.advisory_status(),
                     "data_dir":str(service.data_dir),"security_assessment":False})
+            return 0
+        if args.show_network:
+            _print(service.discover_network())
             return 0
         if args.list_assessments:
             _print([a.model_dump(mode="json") for a in service.list_assessments()]); return 0
