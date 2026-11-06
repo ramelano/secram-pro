@@ -24,6 +24,18 @@ Bu komut yalnız uygulamanın oluşturduğu loopback Lab’ını kullanır. Root
 
 ## Yetkili değerlendirme
 
+En kısa terminal kullanımı tek IP ve port listesiyle şöyledir:
+
+```bash
+secram-pro \
+  --scan-target 192.168.1.1 \
+  --scan-ports 22,80,443 \
+  --authorized \
+  --scan-output ./tarama-sonucu.json
+```
+
+Komut tarama tamamlanınca sonucu terminale basar. `--scan-output` verilirse aynı sonuç 0600 izinli JSON dosyasına yazılır. `--authorized` açık yetki beyanı olmadan tarama başlatılmaz.
+
 Önce profili kopyalayıp yalnız size ait hedef/port/izin bilgilerini girin:
 
 ```bash

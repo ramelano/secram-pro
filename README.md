@@ -57,6 +57,18 @@ APPIMAGE_EXTRACT_AND_RUN=1 ./SecRam-Pro-v0.4.0-x86_64.AppImage
 
 ## Grafik arayüzü
 
+Başlangıç kullanıcıları için program açıldığında **Hızlı Tarama** sekmesini kullanın:
+
+1. `Hedef IP` alanına tek bir literal IP yazın; örneğin `192.168.1.1`.
+2. `TCP portları` alanına `22,80,443` gibi izinli portları yazın.
+3. Yetki beyanını işaretleyin.
+4. **Taramayı Başlat** düğmesine basın.
+5. Açık/kapalı port sonucu aynı ekranda görünür. Sonuç ayrıca `~/.local/share/secram-pro/reports/scan-<görev-id>.json` dosyasına yazılır.
+
+Bu ekran toplu CIDR taraması yapmaz; güvenli ve anlaşılır kullanım için bir seferde tek IP tarar.
+
+Teknik ayrıntıları görmek isterseniz **LAN / Nmap**, **Görevler** ve **İşlem Kaydı** sekmeleri kullanılabilir.
+
 Programı açtıktan sonra:
 
 1. **Değerlendirmeler** bölümünde yetkili bir kapsam oluşturun.
@@ -77,6 +89,20 @@ Red Team v0.1 gerçek olarak şunları yapar:
 - Kanıtları raporlar ve **T1046 — Network Service Scanning** ile eşleştirir.
 
 Sonuç profili `red_team_v0.1_scoped` olarak işaretlenir. Gerçek hedef verisi içermeyen örnek çıktı: [red-team-sample-report.json](docs/examples/red-team-sample-report.json).
+
+## Terminalde hızlı tarama
+
+GUI kullanmak istemezseniz aynı kapsamlı taramayı şu komutla başlatabilirsiniz:
+
+```bash
+secram-pro \
+  --scan-target 192.168.1.1 \
+  --scan-ports 22,80,443 \
+  --authorized \
+  --scan-output ./tarama-sonucu.json
+```
+
+Komut sonucu terminalde JSON olarak gösterilir ve `--scan-output` ile belirtilen dosyaya da yazılır. `--authorized` zorunludur; hostname, CIDR aralığı ve serbest Nmap argümanı kabul edilmez.
 
 Bu sürümde parola saldırısı, credential theft, phishing, malware/C2, kalıcılık, gizlenme/evasion, exploit veya sınırsız shell yoktur. Açık port tek başına zafiyet kanıtı değildir; bulgular gözlem ve aday bulgu niteliğindedir.
 

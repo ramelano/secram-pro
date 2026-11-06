@@ -141,6 +141,7 @@ def test_tab_labels_and_empty_service_are_safe(qt_app: QApplication) -> None:
     window = MainWindow(FakeService())
     labels = [window.tab_widget.tabText(i) for i in range(window.tab_widget.count())]
     assert labels == [
+        "Hızlı Tarama",
         "Değerlendirmeler",
         "Görevler",
         "Araçlar",
@@ -165,6 +166,17 @@ def test_authorization_checkbox_gates_assessment_creation(qt_app: QApplication) 
     assert window.create_assessment_button.isEnabled()
     window.authorization_checkbox.setChecked(False)
     assert not window.create_assessment_button.isEnabled()
+    window.close()
+    _process_events(qt_app)
+
+
+def test_quick_scan_is_gated_by_authorization_checkbox(qt_app: QApplication) -> None:
+    window = MainWindow(FakeService())
+    assert not window.quick_scan_button.isEnabled()
+    window.quick_authorization_checkbox.setChecked(True)
+    assert window.quick_scan_button.isEnabled()
+    window.quick_authorization_checkbox.setChecked(False)
+    assert not window.quick_scan_button.isEnabled()
     window.close()
     _process_events(qt_app)
 

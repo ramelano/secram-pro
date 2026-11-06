@@ -8,6 +8,7 @@ connection.
 from __future__ import annotations
 
 import json
+import ipaddress
 from datetime import date, datetime
 from enum import Enum
 from typing import Any, Iterable
@@ -103,6 +104,21 @@ def _plain(value: Any) -> str:
     return str(value)
 
 
+def _nmap_summary(result: Any) -> str:
+    if not isinstance(result, dict):
+        return "Sonuç özeti alınamadı."
+    hosts = result.get("hosts") or []
+    ports = hosts[0].get("ports", []) if hosts and isinstance(hosts[0], dict) else []
+    open_ports = [str(item.get("port")) for item in ports if item.get("state") == "open"]
+    closed_ports = [str(item.get("port")) for item in ports if item.get("state") != "open"]
+    requested = result.get("requested_ports") or []
+    return (
+        f"İstenen port: {', '.join(map(str, requested)) or 'yok'} · "
+        f"Açık: {', '.join(open_ports) or 'yok'} · "
+        f"Kapalı/filtreli: {', '.join(closed_ports) or 'yok'}"
+    )
+
+
 def _parse_ports(text: str) -> list[int]:
     if not text.strip():
         return []
@@ -173,6 +189,7 @@ class MainWindow(QMainWindow):
         root_layout.addLayout(heading_layout)
 
         self.tab_widget = QTabWidget()
+        self.tab_widget.addTab(self._build_quick_scan_tab(), "Hızlı Tarama")
         self.tab_widget.addTab(self._build_assessments_tab(), "Değerlendirmeler")
         self.tab_widget.addTab(self._build_tasks_tab(), "Görevler")
         self.tab_widget.addTab(self._build_tools_tab(), "Araçlar")
@@ -189,6 +206,45 @@ class MainWindow(QMainWindow):
 
         self.setCentralWidget(root)
         self.statusBar().showMessage("Hazır")
+
+    def _build_quick_scan_tab(self) -> QWidget:
+        tab = QWidget()
+        layout = QVBoxLayout(tab)
+        intro = QLabel(
+            "Başlangıç için burada yalnızca tek IP ve izinli TCP portlarını girin. "
+            "Tarama bitince açık/kapalı port sonucu bu ekranda gösterilir ve özel JSON dosyasına kaydedilir. "
+            "CIDR aralığı veya hostname bu hızlı ekranda kullanılmaz."
+        )
+        intro.setWordWrap(True)
+        intro.setStyleSheet("font-size: 14px; color: #31465a;")
+        layout.addWidget(intro)
+        form = QFormLayout()
+        self.quick_target_input = QLineEdit()
+        self.quick_target_input.setPlaceholderText("Örn. 192.168.1.1")
+        self.quick_ports_input = QLineEdit("22,80,443")
+        self.quick_ports_input.setPlaceholderText("Örn. 22,80,443")
+        form.addRow("Hedef IP", self.quick_target_input)
+        form.addRow("TCP portları", self.quick_ports_input)
+        layout.addLayout(form)
+        self.quick_authorization_checkbox = QCheckBox(
+            "Bu hedef için açık yetkim olduğunu beyan ediyorum"
+        )
+        self.quick_authorization_checkbox.toggled.connect(
+            lambda checked: self.quick_scan_button.setEnabled(checked)
+        )
+        layout.addWidget(self.quick_authorization_checkbox)
+        self.quick_scan_button = QPushButton("Taramayı Başlat")
+        self.quick_scan_button.setEnabled(False)
+        self.quick_scan_button.clicked.connect(self._start_quick_scan)
+        layout.addWidget(self.quick_scan_button)
+        self.quick_result_label = QLabel("Henüz tarama yapılmadı.")
+        self.quick_result_label.setWordWrap(True)
+        layout.addWidget(self.quick_result_label)
+        self.quick_result_view = QPlainTextEdit()
+        self.quick_result_view.setReadOnly(True)
+        self.quick_result_view.setPlaceholderText("Tarama sonucu burada görünecek.")
+        layout.addWidget(self.quick_result_view, 1)
+        return tab
 
     def _build_assessments_tab(self) -> QWidget:
         tab = QWidget()
@@ -870,6 +926,49 @@ class MainWindow(QMainWindow):
             self.refresh_data()
         except Exception as exc:
             self._show_action_error("Nmap görevi başlatılamadı", exc)
+
+    def _start_quick_scan(self) -> None:
+        try:
+            if not self.quick_authorization_checkbox.isChecked():
+                raise ValueError("Tarama için açık yetki beyanını işaretleyin.")
+            target = self.quick_target_input.text().strip()
+            address = ipaddress.ip_address(target)
+            if address.is_unspecified or address.is_multicast or address.is_reserved:
+                raise ValueError("Geçerli bir unicast IPv4/IPv6 hedefi girin.")
+            ports = _parse_ports(self.quick_ports_input.text())
+            assessment = self.service.create_assessment(
+                "Hızlı TCP taraması",
+                [f"{address}/{'128' if address.version == 6 else '32'}"],
+                "GUI kullanıcısı",
+                "GUI hızlı tarama yetki beyanı",
+                expires_hours=1,
+                allowed_operations={"nmap.tcp_scan"},
+                allowed_ports=set(ports),
+            )
+            self._selected_assessment_id = _id(assessment)
+            task = self.service.submit_operation(
+                self._selected_assessment_id,
+                "Hızlı Nmap TCP taraması",
+                "nmap.tcp_scan",
+                target=str(address),
+                params={"ports": ports},
+            )
+            self.statusBar().showMessage("Tarama çalışıyor; sonuç bekleniyor…")
+            self.service.wait_idle(70)
+            completed = self.service.repository.get_task(task.id)
+            result_path = self.service.save_task_result(task.id)
+            payload = completed.model_dump(mode="json")
+            payload["result_file"] = str(result_path)
+            self.quick_result_label.setText(
+                f"Durum: {completed.state.value} · {_nmap_summary(payload.get('result'))}\n"
+                f"Sonuç dosyası: {result_path}"
+            )
+            self.quick_result_view.setPlainText(_json_text(payload))
+            self.quick_authorization_checkbox.setChecked(False)
+            self.statusBar().showMessage("Tarama tamamlandı; sonuç bu ekranda ve JSON dosyasında.")
+            self.refresh_data()
+        except Exception as exc:
+            self._show_action_error("Hızlı tarama başlatılamadı", exc)
 
     def _start_http(self) -> None:
         self._start_web("web.http_headers")

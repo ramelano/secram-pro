@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import asyncio
 import fcntl
+import json
 import os
 from pathlib import Path
 import sys
@@ -209,6 +210,42 @@ class ApplicationService:
 
     def list_tasks(self) -> list[Task]:
         return self.repository.list_tasks()
+
+    def save_task_result(self, task_id: str, output_path: Path | None = None) -> Path:
+        """Save one completed task as a private, easy-to-find JSON artifact."""
+        task = self.repository.get_task(task_id)
+        if output_path is None:
+            output_dir = self.data_dir / "reports"
+            output_dir.mkdir(mode=0o700, parents=True, exist_ok=True)
+            output_path = output_dir / f"scan-{task.id}.json"
+        else:
+            output_path = Path(output_path).expanduser()
+            output_path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+        if output_path.is_symlink() or output_path.exists() and not output_path.is_file():
+            raise ValueError("Sonuç yolu symlink veya normal dosya olmayan bir yol olamaz")
+        payload = {
+            "task_id": task.id,
+            "name": task.name,
+            "operation": task.operation,
+            "target": task.target,
+            "state": task.state.value,
+            "error": task.error,
+            "result": task.result,
+        }
+        flags = os.O_WRONLY | os.O_CREAT | os.O_TRUNC | os.O_NOFOLLOW
+        descriptor = os.open(output_path, flags, 0o600)
+        try:
+            with os.fdopen(descriptor, "w", encoding="utf-8") as stream:
+                descriptor = -1
+                json.dump(payload, stream, ensure_ascii=False, indent=2, default=str)
+                stream.write("\n")
+                stream.flush()
+                os.fsync(stream.fileno())
+        finally:
+            if descriptor != -1:
+                os.close(descriptor)
+        os.chmod(output_path, 0o600)
+        return output_path
 
     def list_audit(self, limit: int = 200):
         return self.repository.list_audit(limit)

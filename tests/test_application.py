@@ -1,4 +1,5 @@
 import asyncio
+import stat
 
 import pytest
 
@@ -59,6 +60,20 @@ def test_service_end_to_end(tmp_path):
         assert reopened.list_tasks()[0].state == TaskState.SUCCEEDED
     finally:
         reopened.close()
+
+
+def test_task_result_is_saved_as_private_json(tmp_path):
+    service = ApplicationService(tmp_path / "data")
+    try:
+        assessment = service.create_assessment("Yerel çekirdek", ["127.0.0.1/32"], "Test sahibi", "Yerel test")
+        task = service.submit_operation(assessment.id, "Çekirdek kontrolü", "core.self_check")
+        service.wait_idle()
+        output = service.save_task_result(task.id)
+        assert output.is_file()
+        assert stat.S_IMODE(output.stat().st_mode) == 0o600
+        assert '"task_id"' in output.read_text(encoding="utf-8")
+    finally:
+        service.close()
 
 
 def test_service_rejects_blank_authorization(tmp_path):

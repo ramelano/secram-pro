@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import argparse
+import ipaddress
 import json
 from pathlib import Path
 import shutil
@@ -32,6 +33,53 @@ def _profile(service, path):
     return 0 if completed.state.value=="succeeded" and completed.result.get("status")=="complete" else 1
 
 
+def _scan_ports(text: str) -> list[int]:
+    parts = [part.strip() for part in text.split(",") if part.strip()]
+    if not 1 <= len(parts) <= 32 or any(not part.isascii() or not part.isdecimal() for part in parts):
+        raise ValueError("--scan-ports 1–32 adet virgülle ayrılmış sayı olmalı")
+    ports = [int(part) for part in parts]
+    if len(set(ports)) != len(ports) or any(not 1 <= port <= 65535 for port in ports):
+        raise ValueError("Tarama portları 1–65535 arasında ve farklı olmalı")
+    return ports
+
+
+def _scan_summary(result: object) -> str:
+    if not isinstance(result, dict):
+        return "Sonuç özeti alınamadı."
+    hosts = result.get("hosts") or []
+    ports = hosts[0].get("ports", []) if hosts and isinstance(hosts[0], dict) else []
+    opened = [str(item.get("port")) for item in ports if item.get("state") == "open"]
+    closed = [str(item.get("port")) for item in ports if item.get("state") != "open"]
+    return f"Açık: {', '.join(opened) or 'yok'} | Kapalı/filtreli: {', '.join(closed) or 'yok'}"
+
+
+def _quick_scan(service, target: str, ports_text: str, output: Path | None, authorized: bool) -> int:
+    if not authorized:
+        raise ValueError("Tarama için --authorized açık yetki beyanı gerekir")
+    try:
+        address = ipaddress.ip_address(target)
+    except ValueError as exc:
+        raise ValueError("--scan-target yalnızca literal IPv4/IPv6 adresi kabul eder") from exc
+    if address.is_unspecified or address.is_multicast or address.is_reserved:
+        raise ValueError("Bu IP adresi tarama hedefi olarak kabul edilmez")
+    ports = _scan_ports(ports_text)
+    assessment = service.create_assessment(
+        "Terminal hızlı TCP taraması", [f"{address}/{'128' if address.version == 6 else '32'}"],
+        "CLI kullanıcısı", "CLI --authorized kullanıcı beyanı", expires_hours=1,
+        allowed_operations={"nmap.tcp_scan"}, allowed_ports=set(ports),
+    )
+    task = service.submit_operation(assessment.id, "Terminal hızlı Nmap TCP", "nmap.tcp_scan",
+                                    target=str(address), params={"ports": ports})
+    service.wait_idle(70)
+    completed = service.repository.get_task(task.id)
+    saved = service.save_task_result(task.id, output) if output else service.save_task_result(task.id)
+    result = completed.model_dump(mode="json")
+    result["result_file"] = str(saved)
+    result["summary"] = _scan_summary(result.get("result"))
+    _print(result)
+    return 0 if completed.state.value == "succeeded" else 1
+
+
 def main() -> int:
     parser=argparse.ArgumentParser(description="SecRam-Pro v0.4.0 — çevrimdışı, kapsam kontrollü Linux değerlendirme")
     parser.add_argument("--data-dir",type=Path,help="Ayrı kullanıcı veri dizini")
@@ -42,10 +90,14 @@ def main() -> int:
     checks.add_argument("--doctor",action="store_true",help="Yerel bağımlılık/durum bilgisi; tarama yok")
     checks.add_argument("--lab-demo",action="store_true",help="Yalnız kendi geçici rootless HTTP Lab'ında gerçek otonom test")
     checks.add_argument("--run-assessment",type=Path,help="Açık yetki/kapsam içeren yerel JSON profil")
+    checks.add_argument("--scan-target",help="Tek literal IP için hızlı TCP taraması")
     checks.add_argument("--import-osv",type=Path,help="Yerel OSV JSON verisini içe aktar")
     checks.add_argument("--list-assessments",action="store_true",help="Kayıtlı değerlendirmeleri JSON listeler")
     checks.add_argument("--export",metavar="ASSESSMENT_ID",help="Değerlendirmeyi beş formatta dışa aktar")
     parser.add_argument("--output-dir",type=Path,help="--export için yerel rapor dizini")
+    parser.add_argument("--scan-ports",help="--scan-target için örn. 22,80,443")
+    parser.add_argument("--scan-output",type=Path,help="Tarama JSON sonucunun yazılacağı dosya")
+    parser.add_argument("--authorized",action="store_true",help="Bu hedef için açık yetki beyanı")
     args=parser.parse_args()
     if sys.platform!="linux": parser.error("Bu sürüm yalnız Linux destekler")
     service=None
@@ -65,6 +117,10 @@ def main() -> int:
         if args.export:
             result=service.export_report(args.export,args.output_dir); _print(result)
             return 0 if not result["unavailable_formats"] else 1
+        if args.scan_target is not None:
+            if not args.scan_ports:
+                parser.error("--scan-target ile birlikte --scan-ports zorunludur")
+            return _quick_scan(service, args.scan_target, args.scan_ports, args.scan_output, args.authorized)
         if args.run_assessment: return _profile(service,args.run_assessment)
         if args.lab_demo:
             lab=service.create_lab()
